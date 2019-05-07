@@ -99,6 +99,11 @@ define Package/miredo-client/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/miredo-checkconf $(1)/usr/sbin/
 endef
 
+define Build/Prepare
+	$(Build/Prepare/Default)
+	( cd $(PKG_BUILD_DIR) && cp $(STAGING_DIR)/../host/share/gettext/gettext.h ./include/gettext.h )
+endef
+
 $(eval $(call BuildPackage,miredo-common))
 $(eval $(call BuildPackage,miredo-server))
 $(eval $(call BuildPackage,miredo-client))
