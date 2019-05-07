@@ -38,6 +38,9 @@ include $(INCLUDE_DIR)/version.mk
 
 CONFIGURE_ARGS+=--with-pic --without-libiconv-prefix --without-libintl-prefix --without-Judy --enable-shared --enable-miredo-user=root --enable-teredo-client
 
+TARGET_CFLAGS+=-Wno-error=format-security
+TARGET_CXXFLAGS+=-Wno-error=format-security
+
 define Package/miredo/Default
 	SECTION:=net
 	CATEGORY:=Network
