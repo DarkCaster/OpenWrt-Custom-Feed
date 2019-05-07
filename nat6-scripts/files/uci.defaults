@@ -1,0 +1,21 @@
+#!/bin/sh
+
+uci -q batch <<-EOT
+delete firewall.nat6_masq
+delete firewall.nat6_chains
+commit firewall
+set firewall.nat6_chains=include
+set firewall.nat6_chains.type=script
+set firewall.nat6_chains.path=/etc/firewall.nat6.chains
+set firewall.nat6_chains.family=ipv6
+set firewall.nat6_chains.reload=0
+commit firewall
+set firewall.nat6_masq=include
+set firewall.nat6_masq.type=script
+set firewall.nat6_masq.path=/usr/share/nat6-scripts/firewall.include
+set firewall.nat6_masq.family=ipv6
+set firewall.nat6_masq.reload=1
+commit firewall
+EOT
+
+exit 0
