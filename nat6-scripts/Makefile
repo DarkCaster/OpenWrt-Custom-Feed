@@ -19,6 +19,18 @@ define Package/nat6-scripts
   URL:=https://github.com/DarkCaster/OpenWrt-Custom-Feed
 endef
 
+define Build/Compile
+	true
+endef
+
+define Build/Install
+	true
+endef
+
+define Build/Clean
+	true
+endef
+
 define Package/nat6-scripts/conffiles
 /etc/firewall.nat6.chains
 endef
