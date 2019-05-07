@@ -1,0 +1,19 @@
+diff -uprN miredo/src/main.c miredo.new/src/main.c
+--- miredo/src/main.c	2019-05-07 22:39:33.039658015 +0300
++++ miredo.new/src/main.c	2019-05-08 00:32:05.418402573 +0300
+@@ -174,7 +174,6 @@ create_pidfile (const char *path)
+ }
+ 
+ 
+-#ifdef MIREDO_DEFAULT_USERNAME
+ static void
+ setuid_notice (void)
+ {
+@@ -183,7 +182,6 @@ setuid_notice (void)
+ "the program as an user with insufficient system privileges.\n"
+ "This program should normally be started by root.\n"), stderr);
+ }
+-#endif
+ 
+ 
+ /**
