@@ -101,7 +101,7 @@ endef
 
 define Build/Prepare
 	$(Build/Prepare/Default)
-	( cd $(PKG_BUILD_DIR) && cp $(STAGING_DIR)/hostpkg/share/gettext/gettext.h ./include/gettext.h )
+	( cd $(PKG_BUILD_DIR) && cp $(STAGING_DIR)/../hostpkg/share/gettext/gettext.h ./include/gettext.h )
 endef
 
 $(eval $(call BuildPackage,miredo-common))
