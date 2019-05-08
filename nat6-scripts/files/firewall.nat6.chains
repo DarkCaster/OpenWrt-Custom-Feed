@@ -2,12 +2,12 @@
 
 # Populate ipv6-nat chains, needed for /usr/share/nat6-scripts/firewall.include script to work,
 # becase fw3 does not creating it automatically (at least on OpenWrt 18.06).
-# Do not forget to define proper network-device for corresponding zone here (eth1 at this example)
+# Do not forget to define proper network-device for corresponding zone here (eth0 at this example)
 
 ip6tables -t nat -N zone_wan_postrouting
 ip6tables -t nat -N zone_wan_prerouting
-ip6tables -t nat -A POSTROUTING -o eth1 -j zone_wan_postrouting
-ip6tables -t nat -A PREROUTING -i eth1 -j zone_wan_prerouting
+ip6tables -t nat -A POSTROUTING -o eth0 -j zone_wan_postrouting
+ip6tables -t nat -A PREROUTING -i eth0 -j zone_wan_prerouting
 
 #example of ipv6-nat port-forwarding with logging (optional)
 #ip6tables -t nat -A zone_wan_prerouting -p tcp -m tcp --dport 65000 -j LOG --log-level 6
