@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/etc/init.d/miredo-client stop
+/etc/init.d/miredo-client disable
+
+rm -f /tmp/luci-indexcache
+
+exit 0
