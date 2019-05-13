@@ -18,4 +18,12 @@ set firewall.nat6_masq.reload=1
 commit firewall
 EOT
 
+uci set network.globals.ula_prefix="$(uci get network.globals.ula_prefix | sed 's/^./d/')"
+uci commit network
+
+zone_id=$(uci show firewall | sed -ne "s/^firewall\.@zone\[\(\d\+\)\]\.name='wan'\$/\1/p")
+uci set firewall.@zone[${zone_id:?}].masq6=1
+uci set firewall.@zone[${zone_id:?}].masq6_privacy=0
+uci commit firewall
+
 exit 0
