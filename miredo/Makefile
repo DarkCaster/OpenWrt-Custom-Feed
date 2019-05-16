@@ -37,10 +37,11 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/version.mk
 
-CONFIGURE_ARGS+=--with-pic --without-libiconv-prefix --without-libintl-prefix --without-Judy --enable-shared --enable-miredo-user=root --enable-teredo-client
+CONFIGURE_ARGS+=--with-ld="$(TARGET_CC)" --without-libiconv-prefix --without-libintl-prefix --without-Judy --disable-shared --disable-static --enable-miredo-user=root --enable-teredo-client
 
-TARGET_CFLAGS+=-Wno-error=format-security
-TARGET_CXXFLAGS+=-Wno-error=format-security
+TARGET_CFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto
+TARGET_CXXFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto
+TARGET_LDFLAGS+=-flto -fuse-linker-plugin
 
 define Package/miredo/Default
 	SECTION:=net
@@ -76,8 +77,6 @@ define Package/miredo-client/conffiles
 endef
 
 define Package/miredo-common/install
-	$(INSTALL_DIR) $(1)/usr/lib
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/lib{teredo,tun6}.so.* $(1)/usr/lib/
 	$(INSTALL_DIR) $(1)/usr/lib/miredo
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/miredo/miredo-privproc $(1)/usr/lib/miredo
 endef
