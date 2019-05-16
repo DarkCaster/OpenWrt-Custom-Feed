@@ -39,10 +39,9 @@ include $(INCLUDE_DIR)/version.mk
 
 CONFIGURE_ARGS+=--without-pic --without-libiconv-prefix --without-libintl-prefix --disable-shared --disable-static --disable-nls --disable-assert --enable-miredo-user=root --enable-teredo-client
 
-TARGET_CFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto
-TARGET_CXXFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto
-TARGET_LDFLAGS+=-flto -fuse-linker-plugin
-MAKE_FLAGS += LD="$(TARGET_CC)"
+TARGET_CFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto -fwhole-program
+TARGET_CXXFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto -fwhole-program
+TARGET_LDFLAGS+=-flto -fwhole-program
 
 define Package/miredo/Default
 	SECTION:=net
