@@ -38,7 +38,7 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/version.mk
 
 CONFIGURE_ARGS+=--without-pic --without-libiconv-prefix --without-libintl-prefix --disable-shared --disable-static --disable-nls --disable-assert --enable-miredo-user=root --enable-teredo-client
-CONFIGURE_VARS+=LD="$(TARGET_CC_NOCACHE)" CC="$(TARGET_CC_NOCACHE)"
+CONFIGURE_VARS+=LD="$(TARGET_CC_NOCACHE)" CC="$(TARGET_CC_NOCACHE)" CPP="$(TARGET_CPP_NOCACHE)"
 
 TARGET_CFLAGS+=-O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto -fwhole-program
 TARGET_CXXFLAGS+=-O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto -fwhole-program
