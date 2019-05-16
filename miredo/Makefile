@@ -37,11 +37,12 @@ PKG_INSTALL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/version.mk
 
-CONFIGURE_ARGS+=--with-ld="$(TARGET_CC)" --without-libiconv-prefix --without-libintl-prefix --without-Judy --disable-shared --disable-static --enable-miredo-user=root --enable-teredo-client
+CONFIGURE_ARGS+=--without-pic --without-libiconv-prefix --without-libintl-prefix --disable-shared --disable-static --disable-nls --disable-assert --enable-miredo-user=root --enable-teredo-client
 
 TARGET_CFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto
 TARGET_CXXFLAGS+=$(filter-out -O%,$(TARGET_CFLAGS)) -O3 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto
 TARGET_LDFLAGS+=-flto -fuse-linker-plugin
+MAKE_FLAGS += LD="$(TARGET_CC)"
 
 define Package/miredo/Default
 	SECTION:=net
