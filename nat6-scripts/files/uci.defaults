@@ -18,6 +18,18 @@ set firewall.nat6_masq.reload=1
 commit firewall
 EOT
 
+rule_name=$(uci add firewall rule)
+uci -q batch <<-EOT
+set firewall.$rule_name.enabled='0'
+set firewall.$rule_name.target='ACCEPT'
+set firewall.$rule_name.src='wan'
+set firewall.$rule_name.proto='tcp udp'
+set firewall.$rule_name.family='ipv6'
+set firewall.$rule_name.name='Forward IPv6 DNAT traffic'
+set firewall.$rule_name.dest='lan'
+commit firewall
+EOT
+
 uci set network.globals.ula_prefix="$(uci get network.globals.ula_prefix | sed 's/^./d/')"
 uci commit network
 

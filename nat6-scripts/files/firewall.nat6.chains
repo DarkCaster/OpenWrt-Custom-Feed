@@ -9,7 +9,9 @@ ip6tables -t nat -N zone_wan_prerouting
 ip6tables -t nat -A POSTROUTING -o eth0 -j zone_wan_postrouting
 ip6tables -t nat -A PREROUTING -i eth0 -j zone_wan_prerouting
 
-#example of ipv6-nat port-forwarding with logging (optional)
+# Example of ipv6-nat port-forwarding with logging (optional), destination use stateless ipv6 address.
+# Do not forget to enable 'Forward IPv6 DNAT traffic' firewall rule.
+
 #ip6tables -t nat -A zone_wan_prerouting -p tcp -m tcp --dport 65000 -j LOG --log-level 6
 #ip6tables -t nat -A zone_wan_prerouting -p udp -m udp --dport 65000 -j LOG --log-level 6
 #ip6tables -t nat -A zone_wan_prerouting -p tcp -m tcp --dport 65000 -j DNAT --to-destination [dd1f:fa2f:4132:0:216:3eff:fe9e:55f]:65000
