@@ -10,8 +10,8 @@
 # Developer notes:
 #   - Make sure you have gawk, othwerise you get weird syntax errors about "("
 #     and ")" when compiling.
-#   - Install ccache, otherwise you'll get configure error:
-#     "C compiler cannot create executables"
+#   - If embedding package into firmware, make sure that following packages is also installed:
+#     ip-tiny (or ip-full) and libmnl
 
 include $(TOPDIR)/rules.mk
 
