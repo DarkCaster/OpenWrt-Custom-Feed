@@ -1,20 +1,49 @@
 #!/bin/sh /etc/rc.common
 
-DEVICE='/dev/ttyUSB0'
-
 START=90
 STOP=90
 
+log_info() {
+  echo "${@}" | logger -t "modem-reset" -p info
+}
+
+log_warning() {
+  echo "${@}" | logger -t "modem-reset" -p warn
+}
+
 start() {
-  if [ -e ${DEVICE} ]; then
-    echo "resetting modem device: ${DEVICE}" | logger -t "modem-reset" -p info
-    #echo -ne "AT^RESET\r" > ${DEVICE}
-    echo -ne "AT+CFUN=0\r" >${DEVICE}
-    sleep 3
-    echo -ne "AT+CFUN=1\r" >${DEVICE}
-  else
-    echo "No such device ${DEVICE}" | logger -t "modem-reset" -p info
+  qualified_ifaces=""
+
+  for iface in $(uci show network | grep "^network\..*=interface$" | sed "s/\(^network.\)\(.*\)\(=.*$\)/\2/"); do
+    iface_device=$(uci get network."${iface}".device 2>/dev/null)
+    log_info "evaluating ${iface} interface and ${iface_device} netdev"
+    case "${iface_device}" in
+    "/dev/ttyUSB"*) ;;
+    "/dev/ttyACM"*) ;;
+    *) continue ;;
+    esac
+    iface_delay=$(uci get network."${iface}".delay 2>/dev/null)
+    [ -z "${iface_delay}" ] && log_warning "'delay' parameter is not specified for $iface interface, you should set some delay (15 seconds for example) in order to allow modem-reset script to finish it's execution before interface initialization"
+    iface_skip_reset=$(uci get network."${iface}".skipreset 2>/dev/null)
+    [ "${iface_skip_reset}" = "1" ] && log_info "skipping modem-reset for ${iface} interface" && continue
+    [ ! -e "${iface_device}" ] && log_warning "modem device not found: ${iface_device}" && continue
+    log_info "${iface} interface is qualified for performing reset"
+    qualified_ifaces="${qualified_ifaces} ${iface_device}"
+  done
+
+  if [ ! -z "${qualified_ifaces}" ]; then
+    for modem_device in ${qualified_ifaces}; do
+      log_info "turning off modem device: ${modem_device}"
+      echo -ne "AT+CFUN=0\r" >${modem_device}
+    done
+    log_info "awaiting 5 seconds in order to complete shutdown of modem devices"
+    sleep 5
+    for modem_device in ${qualified_ifaces}; do
+      log_info "turning on modem device: ${modem_device}"
+      echo -ne "AT+CFUN=1\r" >${modem_device}
+    done
   fi
+  log_info "script complete"
 }
 
 stop() {
