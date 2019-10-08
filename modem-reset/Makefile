@@ -14,7 +14,6 @@ define Package/modem-reset
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Boot script for performing re-init of 3G-modems supporting NCM protocol
-  SUBMENU:=Firewall
   URL:=https://github.com/DarkCaster/OpenWrt-Custom-Feed
 endef
 
