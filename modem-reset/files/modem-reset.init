@@ -1,0 +1,22 @@
+#!/bin/sh /etc/rc.common
+
+DEVICE='/dev/ttyUSB0'
+
+START=90
+STOP=90
+
+start() {
+  if [ -e ${DEVICE} ]; then
+    echo "resetting modem device: ${DEVICE}" | logger -t "modem-reset" -p info
+    #echo -ne "AT^RESET\r" > ${DEVICE}
+    echo -ne "AT+CFUN=0\r" >${DEVICE}
+    sleep 3
+    echo -ne "AT+CFUN=1\r" >${DEVICE}
+  else
+    echo "No such device ${DEVICE}" | logger -t "modem-reset" -p info
+  fi
+}
+
+stop() {
+  true
+}

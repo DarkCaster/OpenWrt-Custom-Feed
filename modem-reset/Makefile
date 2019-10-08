@@ -11,10 +11,10 @@ include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/version.mk
 
 define Package/modem-reset
-  SECTION:=net
-  CATEGORY:=Network
-  TITLE:=Boot script for performing re-init of 3G-modems supporting NCM protocol
-  URL:=https://github.com/DarkCaster/OpenWrt-Custom-Feed
+	SECTION:=net
+	CATEGORY:=Network
+	TITLE:=Boot script for performing re-init of 3G-modems supporting NCM protocol
+	URL:=https://github.com/DarkCaster/OpenWrt-Custom-Feed
 endef
 
 define Build/Compile
@@ -33,7 +33,7 @@ define Package/modem-reset/install
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/modem-reset.init $(1)/etc/init.d/modem-reset
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/modem-reset.defaults $(1)/etc/uci-defaults/99-modem-reset
+	$(INSTALL_BIN) ./files/modem-reset.uci.defaults $(1)/etc/uci-defaults/99-modem-reset
 endef
 
 $(eval $(call BuildPackage,modem-reset))
