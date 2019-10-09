@@ -16,14 +16,14 @@ start() {
 
   for iface in $(uci show network | grep "^network\..*=interface$" | sed "s/\(^network.\)\(.*\)\(=.*$\)/\2/"); do
     iface_device=$(uci get network."${iface}".device 2>/dev/null)
-    log_info "evaluating ${iface} interface and ${iface_device} netdev"
+    log_info "evaluating ${iface} interface"
     case "${iface_device}" in
     "/dev/ttyUSB"*) ;;
     "/dev/ttyACM"*) ;;
     *) continue ;;
     esac
     iface_delay=$(uci get network."${iface}".delay 2>/dev/null)
-    [ -z "${iface_delay}" ] && log_warning "'delay' parameter is not specified for $iface interface, you should set some delay (15 seconds for example) in order to allow modem-reset script to finish it's execution before interface initialization"
+    [ -z "${iface_delay}" ] && log_warning "'delay' parameter is not specified for ${iface} interface, you should set some delay (15 seconds for example) in order to allow modem-reset script to finish it's execution before interface initialization"
     iface_skip_reset=$(uci get network."${iface}".skipreset 2>/dev/null)
     [ "${iface_skip_reset}" = "1" ] && log_info "skipping modem-reset for ${iface} interface" && continue
     [ ! -e "${iface_device}" ] && log_warning "modem device not found: ${iface_device}" && continue
