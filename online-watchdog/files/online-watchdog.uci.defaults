@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/etc/init.d/online-watchdog stop
+/etc/init.d/online-watchdog disable
+
+rm -f /tmp/luci-indexcache
+
+exit 0
