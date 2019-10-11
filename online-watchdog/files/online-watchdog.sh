@@ -114,6 +114,8 @@ start_interfaces() {
 	fi
 }
 
+log_info "starting online-watchdog"
+
 if [ -z "${targets_to_ping}" ]; then
 	log_warning "no ping targets defined, nothing to do"
 	while true; do
@@ -136,7 +138,7 @@ while true; do
 			state="1"
 		fi
 
-		if [ "${fail_counter}" -gt "${sequential_fails_limit}" ]; then
+		if [ "${fail_counter}" -ge "${sequential_fails_limit}" ]; then
 			log_warning "system offline, recovering..."
 			stop_services
 			stop_wifi
