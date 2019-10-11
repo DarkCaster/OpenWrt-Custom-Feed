@@ -48,7 +48,10 @@ pause() {
 	"1") sleep ${ping_timeout} ;;
 	"2") sleep ${ping_fail_timeout} ;;
 	"3") sleep ${restart_delay} ;;
-	*) sleep 1 ;;
+	*)
+		log_warning "invalid state ${state}"
+		sleep 1
+		;;
 	esac
 }
 
