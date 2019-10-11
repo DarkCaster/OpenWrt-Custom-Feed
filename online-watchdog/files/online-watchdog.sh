@@ -43,11 +43,11 @@ fail_counter="0"
 state="0"
 
 pause() {
-	case "${iface_device}" in
-	0) sleep ${initial_timeout} ;;
-	1) sleep ${ping_timeout} ;;
-	2) sleep ${ping_fail_timeout} ;;
-	3) sleep ${restart_delay} ;;
+	case "${state}" in
+	"0") sleep ${initial_timeout} ;;
+	"1") sleep ${ping_timeout} ;;
+	"2") sleep ${ping_fail_timeout} ;;
+	"3") sleep ${restart_delay} ;;
 	*) sleep 1 ;;
 	esac
 }
