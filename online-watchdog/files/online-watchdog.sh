@@ -1,8 +1,16 @@
 #!/bin/sh
 
+log_info() {
+	echo "$@" | logger -t "online-watchdog" -p info
+}
+
+log_warning() {
+	echo "$@" | logger -t "online-watchdog" -p warn
+}
+
 on_exit() {
 	trap - INT HUP QUIT TERM ALRM USR1
-	echo "terminating online watchdog"
+	log_info "terminating online watchdog"
 	exit 0
 }
 
@@ -23,14 +31,6 @@ interfaces_to_stop=$(uci 2>/dev/null -d"|" get online-watchdog.@online-watchdog[
 interfaces_to_start=$(uci 2>/dev/null -d"|" get online-watchdog.@online-watchdog[-1].startinterface)
 
 IFS="|"
-
-log_info() {
-	echo "$@" | logger -t "online-watchdog" -p info
-}
-
-log_warning() {
-	echo "$@" | logger -t "online-watchdog" -p warn
-}
 
 fail_counter="0"
 
@@ -147,6 +147,7 @@ while true; do
 			start_wifi
 			start_services
 			state="0"
+			fail_counter="0"
 			log_info "offline-recovery routine complete"
 		fi
 	done
