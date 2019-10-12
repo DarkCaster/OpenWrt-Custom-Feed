@@ -67,8 +67,11 @@ recovery_fail_pause() {
 	local sleep_time=$((recovery_fail_counter * recovery_fail_delay_mult))
 	[ "${sleep_time}" -gt "${max_recovery_fail_delay}" ] && sleep_time="${max_recovery_fail_delay}" && recovery_fail_counter=$((recovery_fail_counter - 1))
 	if [ "$sleep_time" -gt "0" ]; then
-		log_info "sleeping for ${sleep_time} seconds after recovery failure"
+		log_info "sleeping for ${sleep_time} seconds after multiple recovery failures"
 		long_pause "${sleep_time}"
+	else
+		log_info "sleeping for ${restart_delay} seconds"
+		long_pause "${restart_delay}"
 	fi
 }
 
@@ -81,7 +84,6 @@ pause() {
 	"1") sleep ${ping_timeout} ;;
 	"2") sleep ${ping_fail_timeout} ;;
 	"3")
-		sleep ${restart_delay}
 		recovery_fail_pause
 		;;
 	*)
@@ -158,7 +160,7 @@ log_info "starting online-watchdog"
 if [ -z "${targets_to_ping}" ]; then
 	log_warning "no ping targets defined, nothing to do"
 	while true; do
-		sleep 60
+		sleep 5
 	done
 fi
 
