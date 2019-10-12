@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# TODO: recreate this watchdog daemon with c\c++
+
 log_info() {
 	echo "$@" | logger -t "online-watchdog" -p info
 }
@@ -16,11 +18,16 @@ on_exit() {
 
 trap 'on_exit' INT HUP QUIT TERM ALRM USR1
 
+# TODO: add "is numeric" verification for the following parameters:
 initial_timeout=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].initialtimeout || echo "60")
 ping_timeout=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].pingtimeout || echo "15")
 ping_fail_timeout=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].pingfailtimeout || echo "5")
 restart_delay=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].restartdelay || echo "5")
 sequential_fails_limit=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].sequentialfailslimit || echo "3")
+recovery_fail_delay_mult=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].recoveryfaildelaymult || echo "2")
+max_recovery_fail_delay=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].maxrecoveryfaildelay || echo "3600")
+
+# TODO: add "is boolean" verification for the following parameters
 wifi_start=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].startwifi || echo "0")
 wifi_stop=$(uci 2>/dev/null get online-watchdog.@online-watchdog[-1].stopwifi || echo "0")
 
@@ -32,6 +39,7 @@ interfaces_to_start=$(uci 2>/dev/null -d"|" get online-watchdog.@online-watchdog
 
 IFS="|"
 
+recovery_fail_counter="-1"
 fail_counter="0"
 
 #state:
@@ -42,12 +50,40 @@ fail_counter="0"
 #other - undefined
 state="0"
 
+long_pause() {
+	local delay="$1"
+	while [ "${delay}" -gt "0" ]; do
+		if [ "$delay" -ge "5" ]; then
+			sleep 5
+			delay=$((delay - 5))
+		else
+			sleep ${delay}
+			delay="0"
+		fi
+	done
+}
+
+recovery_fail_pause() {
+	local sleep_time=$((recovery_fail_counter * recovery_fail_delay_mult))
+	[ "${sleep_time}" -gt "${max_recovery_fail_delay}" ] && sleep_time="${max_recovery_fail_delay}" && recovery_fail_counter=$((recovery_fail_counter - 1))
+	if [ "$sleep_time" -gt "0" ]; then
+		log_info "sleeping for ${sleep_time} seconds after recovery failure"
+		long_pause "${sleep_time}"
+	fi
+}
+
 pause() {
 	case "${state}" in
-	"0") sleep ${initial_timeout} ;;
+	"0")
+		log_warning "sleeping for ${initial_timeout} seconds"
+		long_pause ${initial_timeout}
+		;;
 	"1") sleep ${ping_timeout} ;;
 	"2") sleep ${ping_fail_timeout} ;;
-	"3") sleep ${restart_delay} ;;
+	"3")
+		sleep ${restart_delay}
+		recovery_fail_pause
+		;;
 	*)
 		log_warning "invalid state ${state}"
 		sleep 1
@@ -139,9 +175,11 @@ while true; do
 		else
 			fail_counter="0"
 			state="1"
+			recovery_fail_counter="-1"
 		fi
 
 		if [ "${fail_counter}" -ge "${sequential_fails_limit}" ]; then
+			recovery_fail_counter=$((recovery_fail_counter + 1))
 			log_warning "system offline, recovering..."
 			stop_services
 			stop_wifi
