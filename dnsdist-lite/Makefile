@@ -50,9 +50,6 @@ define Package/dnsdist-lite/conffiles
 endef
 
 CONFIGURE_ARGS+= \
-	--without-pic \
-	--disable-shared \
-	--enable-static \
 	--disable-dnscrypt \
 	--without-libsodium \
 	--disable-dnstap \
@@ -76,8 +73,8 @@ CONFIGURE_VARS+= \
 	LIBCAP_LIBS=-lcap \
 	LIBCAP_CFLAGS=-I$(STAGING_DIR)/usr/include
 
-TARGET_CFLAGS+=-O2 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
-TARGET_CXXFLAGS+=-O2 -Wno-error=format-security -Werror=strict-aliasing -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_CFLAGS+=-Os -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_CXXFLAGS+=-Os -flto -fuse-linker-plugin -ffat-lto-objects
 TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
 define Package/dnsdist-lite/install
