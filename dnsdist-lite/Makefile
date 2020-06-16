@@ -67,6 +67,7 @@ CONFIGURE_ARGS+= \
 	--with-lua=lua \
 	--without-libssl \
 	--without-gnutls \
+	--without-libcrypto \
 	--with-lmdb
 
 CONFIGURE_VARS+= \
