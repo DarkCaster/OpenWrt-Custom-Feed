@@ -16,7 +16,7 @@ PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 PKG_ASLR_PIE:=0
-PKG_BUILD_DEPENDS:=libcap lmdb re2 tinycdb lua libedit
+PKG_BUILD_DEPENDS:=libcap lmdb tinycdb lua libedit
 PKG_BUILD_DIR:=$(BUILD_DIR)/dnsdist-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
@@ -68,6 +68,10 @@ CONFIGURE_ARGS+= \
 	--without-libssl \
 	--without-gnutls \
 	--with-lmdb
+
+CONFIGURE_VARS+= \
+	LIBCAP_LIBS=-lcap \
+	LIBCAP_CFLAGS=-I$(STAGING_DIR)/usr/include
 
 define Package/dnsdist-lite/install
 	$(INSTALL_DIR) $(1)/etc
