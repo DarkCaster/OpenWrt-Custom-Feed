@@ -5,6 +5,7 @@ PKG_VERSION:=1.5.0-rc2
 PKG_RELEASE:=5
 
 PKG_SOURCE:=dnsdist-$(PKG_VERSION).tar.bz2
+PKG_SOURCE_SUBDIR:=dnsdist-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://downloads.powerdns.com/releases/
 PKG_HASH:=a2c69a5c728a08238a7e907b55badb29e39062202d0d9d291a41919a8548bbbc
 
