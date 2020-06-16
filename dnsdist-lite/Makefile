@@ -33,8 +33,7 @@ define Package/dnsdist-lite
 	  +libedit \
 	  +lmdb \
 	  +lua \
-	  +re2 \
-	  +tinycdb
+	  +re2
   URL:=https://dnsdist.org/
 endef
 
