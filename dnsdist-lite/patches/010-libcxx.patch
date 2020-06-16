@@ -1,36 +1,19 @@
-From 405bdec807a7b530173ebf018843c4552dfa20c9 Mon Sep 17 00:00:00 2001
-From: Rosen Penev <rosenp@gmail.com>
-Date: Sat, 6 Jun 2020 11:33:55 -0700
-Subject: [PATCH] use std::string_view when available
-
-There's a standard C++ macro to check for its existence.
-
-libstdc++ from GCC makes it available under C++17 and up. libcxx from
-LLVM makes it available everywhere.
-
-Signed-off-by: Rosen Penev <rosenp@gmail.com>
----
- ext/lmdb-safe/lmdb-safe.hh | 7 +++----
- pdns/dnsdistdist/views.hh  | 7 +++----
- 2 files changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/ext/lmdb-safe/lmdb-safe.hh b/ext/lmdb-safe/lmdb-safe.hh
-index 056a6cd823..16d150fa7d 100644
---- a/ext/lmdb-safe/lmdb-safe.hh
-+++ b/ext/lmdb-safe/lmdb-safe.hh
-@@ -10,8 +10,9 @@
- #include <string.h>
- #include <mutex>
+diff -uprN dnsdist-1.5.0-rc2.old/ext/lmdb-safe/lmdb-safe.hh dnsdist-1.5.0-rc2/ext/lmdb-safe/lmdb-safe.hh
+--- dnsdist-1.5.0-rc2.old/ext/lmdb-safe/lmdb-safe.hh	2020-03-23 15:20:46.000000000 +0300
++++ dnsdist-1.5.0-rc2/ext/lmdb-safe/lmdb-safe.hh	2020-06-16 18:01:32.620843835 +0300
+@@ -12,8 +12,9 @@
+ #include <vector>
+ #include <algorithm>
  
 -// apple compiler somehow has string_view even in c++11!
--#if __cplusplus < 201703L && !defined(__APPLE__)
+-#if __cplusplus < 201703L && !defined(__APPLE__) && !defined(__OpenBSD__) && !defined(__FreeBSD__)
 +#ifdef __cpp_lib_string_view
 +using std::string_view;
 +#else
  #include <boost/version.hpp>
  #if BOOST_VERSION >= 106100
  #include <boost/utility/string_view.hpp>
-@@ -20,8 +21,6 @@ using boost::string_view;
+@@ -22,8 +23,6 @@ using boost::string_view;
  #include <boost/utility/string_ref.hpp>
  using string_view = boost::string_ref;
  #endif
