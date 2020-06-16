@@ -73,6 +73,10 @@ CONFIGURE_VARS+= \
 	LIBCAP_LIBS=-lcap \
 	LIBCAP_CFLAGS=-I$(STAGING_DIR)/usr/include
 
+TARGET_CFLAGS+=-O2 -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_CXXFLAGS+=-O2 -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
+
 define Package/dnsdist-lite/install
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_CONF) ./files/dnsdist.conf $(1)/etc/dnsdist.conf
