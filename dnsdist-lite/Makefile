@@ -84,6 +84,8 @@ define Package/dnsdist-lite/install
 	$(INSTALL_BIN) ./files/dnsdist.init $(1)/etc/init.d/dnsdist
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/dnsdist $(1)/usr/bin/
+	$(INSTALL_DIR) $(1)/etc/uci-defaults
+	$(INSTALL_BIN) ./files/uci.defaults $(1)/etc/uci-defaults/99-dnsdist
 endef
 
 $(eval $(call BuildPackage,dnsdist-lite))
