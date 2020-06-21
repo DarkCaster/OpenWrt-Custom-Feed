@@ -25,7 +25,7 @@ define Package/dnsdist-lite
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
-  TITLE:=dnsdist DNS-, DOS- and abuse-aware loadbalancer
+  TITLE:=trimmed down version of dnsdist
   DEPENDS:= \
 	  +boost \
 	  +libatomic \
@@ -38,14 +38,13 @@ define Package/dnsdist-lite
 endef
 
 define Package/dnsdist-lite/description
-  dnsdist is a highly DNS-, DoS- and abuse-aware loadbalancer. Its goal in life
-  is to route traffic to the best server, delivering top performance to legitimate
-  users while shunting or blocking abusive traffic.
+  trimmed down version of dnsdist: all protobuf- and encryption-related options were disabled, added sample configuration script
 endef
 
 define Package/dnsdist-lite/conffiles
-/etc/dnsdist.conf
-/etc/config/dnsdist
+/etc/dnsdist.cfg.lua
+/etc/dnsdist.defs.lua
+/etc/dnsdist.post.lua
 /etc/init.d/dnsdist
 endef
 
@@ -78,9 +77,9 @@ TARGET_CXXFLAGS+=-Os
 
 define Package/dnsdist-lite/install
 	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) ./files/dnsdist.conf $(1)/etc/dnsdist.conf
-	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/dnsdist.config $(1)/etc/config/dnsdist
+	$(INSTALL_CONF) ./files/dnsdist.cfg.lua $(1)/etc/dnsdist.cfg.lua
+	$(INSTALL_CONF) ./files/dnsdist.defs.lua $(1)/etc/dnsdist.defs.lua
+	$(INSTALL_CONF) ./files/dnsdist.post.lua $(1)/etc/dnsdist.post.lua
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/dnsdist.init $(1)/etc/init.d/dnsdist
 	$(INSTALL_DIR) $(1)/usr/bin
