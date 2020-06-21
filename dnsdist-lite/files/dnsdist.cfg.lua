@@ -54,7 +54,7 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 			mainActionDebug=" to be dropped"
 		else
 			mainAction=RCodeAction(ruleDef.d)
-			mainActionDebug=" to RCode answer with DNSRCode: "..ruleDef.d
+			mainActionDebug=" to instant answer with DNSRCode: "..ruleDef.d
 		end
 	else
 		assert(false, "rule definition at position #"..ruleIdx.." must contain either 'p' pool-action definition or 'd' drop-action definition")
@@ -75,7 +75,7 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		local qt -- temporary value storing table with qtypes
 		local qtrules={} --table with QTypeRule rules
 		local qtrules_added=false --for checking against empty qtypes table
-		if (type(ruleDef.t)=="table") then qt=ruleDef.t else qtDebug=" NOT "..qtDebug; qt=ruleDef.nt end
+		if (type(ruleDef.t)=="table") then qt=ruleDef.t else qtDebug=" NOT"..qtDebug; qt=ruleDef.nt end
 
 		-- iterate over 't' or 'nt' table, create QTypeRules and save it to qtrules table
 		for qi,q in ipairs(qt) do
