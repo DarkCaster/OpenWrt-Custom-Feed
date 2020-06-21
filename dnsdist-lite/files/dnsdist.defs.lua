@@ -11,7 +11,7 @@ pools={
 }
 
 -- define dns servers
-newServer({address="127.0.0.53:53", pool={pools.lc},name="dnsmasq",setCD=true}) -- TODO: checkfunction, check retries, etc
+newServer({address="127.0.0.53:53", pool={pools.lc},name="systemd-resolved",setCD=true}) -- TODO: checkfunction, check retries, etc
 newServer({address="8.8.8.8:53", pool=pools.bp,name="google"})
 
 --[[ matches table example, rules will be generated from top to bottom 
@@ -23,5 +23,7 @@ definitions={
 
 -- table with definitions for regexp matching-rules
 definitions={
+	{rx="google.com",d=DNSRCode.NOERROR,t={DNSQType.A}},
+	{rx="google.com",p=pools.bp,t={DNSQType.MX}},
 	{rx="google.com",p=pools.lc},
 }

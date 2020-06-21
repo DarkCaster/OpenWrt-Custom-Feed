@@ -36,20 +36,39 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 	local regexRule
 	local regexDebug -- for printing verbose messages about added rules
 	if(type(ruleDef.rx)=="string") then
-		regexDebug="regex rule '"..ruleDef.rx.."'"
+		regexDebug="regex rule: '"..ruleDef.rx.."';"
 		regexRule=RegexRule(ruleDef.rx)
 	else
-		regexDebug="re2 rule: "..ruleDef.re2
+		regexDebug="re2 rule: '"..ruleDef.re2.."';"
 		regexRule=RE2Rule(ruleDef.re2)
 	end
 
-	assert(type(ruleDef.p)=="string","rule definition at position #"..ruleIdx.." must contain 'p' pool definition")
-	assert((type(ruleDef.t)=="nil" and type(ruleDef.nt)=="table") or (type(ruleDef.t)=="table" and type(ruleDef.nt)=="nil") or (type(ruleDef.t)=="nil" and type(ruleDef.nt)=="nil"),"rule definition at position #"..ruleIdx.." must contain qtype definition as either 't' or 'nt' table, or neither")
+	local mainActionDebug -- for printing verbose messages about added actiom
+	local mainAction
+	if (type(ruleDef.p)=="string" and type(ruleDef.d)=="nil") then
+		mainAction=PoolAction(ruleDef.p)
+		mainActionDebug=" into pool "..ruleDef.p
+	elseif (type(ruleDef.p)=="nil" and type(ruleDef.d)=="number") then
+		if (ruleDef.d<0) then
+			mainAction=DropAction()
+			mainActionDebug=" to be dropped"
+		else
+			mainAction=RCodeAction(ruleDef.d)
+			mainActionDebug=" to RCode answer with DNSRCode: "..ruleDef.d
+		end
+	else
+		assert(false, "rule definition at position #"..ruleIdx.." must contain either 'p' pool-action definition or 'd' drop-action definition")
+	end
+
+	assert((type(ruleDef.t)=="nil" and type(ruleDef.nt)=="table") or
+		(type(ruleDef.t)=="table" and type(ruleDef.nt)=="nil") or
+		(type(ruleDef.t)=="nil" and type(ruleDef.nt)=="nil"),
+		"rule definition at position #"..ruleIdx.." must contain qtype definition as either 't' or 'nt' table, or neither")
 
 	if (type(ruleDef.t)=="nil" and type(ruleDef.nt)=="nil") then
 		-- add simple regexp rule without matching queries against qtypes
-		print("Adding "..regexDebug.." to pool "..ruleDef.p)
-		addAction(regexRule,PoolAction(ruleDef.p))
+		print("Adding "..regexDebug..mainActionDebug)
+		addAction(regexRule,mainAction)
 	else
 		-- add action with qname-regexp and qtypes matching
 		local qtDebug=" matching QTypes: " -- for printing verbose messages about added rules
@@ -68,11 +87,11 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		assert(qtrules_added==true,"rule definition at position #"..ruleIdx.." do not contain non-empty table with valid DNSQtype entries")
 
 		-- add regexp rule with matching queries against list of qtypes
-		print("Adding "..regexDebug..";"..qtDebug.." to pool "..ruleDef.p)
+		print("Adding "..regexDebug..qtDebug..mainActionDebug)
 		if (type(ruleDef.t)=="table") then
-			addAction(AndRule({regexRule,OrRule(qtrules)}),PoolAction(ruleDef.p))
+			addAction(AndRule({regexRule,OrRule(qtrules)}),mainAction)
 		else
-			addAction(AndRule({regexRule,NotRule(OrRule(qtrules))}),PoolAction(ruleDef.p))
+			addAction(AndRule({regexRule,NotRule(OrRule(qtrules))}),mainAction)
 		end
 	end
 end
@@ -81,4 +100,5 @@ end
 dofile("/etc/dnsdist.post.lua")
 
 -- add action that will generate negative response for all other non-matched queries
-addAction(AllRule(),SetNegativeAndSOAAction(true,"dnsdist",1800,"dnsdist","dnsdist",0,86400,7200,3600000,1800))
+--addAction(AllRule(),SetNegativeAndSOAAction(true,"dnsdist",1800,"dnsdist","dnsdist",0,86400,7200,3600000,1800))
+addAction(AllRule(),RCodeAction(DNSRCode.NXDOMAIN))
