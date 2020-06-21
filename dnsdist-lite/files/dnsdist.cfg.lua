@@ -23,7 +23,7 @@ dofile("/etc/dnsdist.defs.lua")
 
 assert(rulesDefTableName~=nil and rulesDefTableName~="rulesTable", "rulesDefTableName is invalid")
 
-rulesTable=load("return " .. rulesDefTableName)()
+rulesTable=loadstring("return " .. rulesDefTableName)()
 
 assert(type(rulesTable)=="table","global table with name '" .. rulesDefTableName .. "' is not found")
 
