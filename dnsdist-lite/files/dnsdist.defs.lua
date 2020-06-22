@@ -29,6 +29,15 @@ newServer({address="8.8.8.8", pool={pools.lc}, name="fallback", mustResolve=fals
 setPoolServerPolicy(firstAvailable, pools.lc)
 setPoolServerPolicy(firstAvailable, pools.ext)
 
+setCacheCleaningPercentage(50)
+setStaleCacheEntriesTTL(300)
+
+extPC=newPacketCache(250,{temporaryFailureTTL=5, staleTTL=30})
+locPC=newPacketCache(250,{temporaryFailureTTL=5, staleTTL=30})
+
+getPool(pools.ext):setCache(extPC)
+getPool(pools.lc):setCache(locPC)
+
 -- table with definitions for regexp matching-rules
 definitions={
 	-- queries to google.com. will be processed with regular regexp engine (rx field name, use re2 field name for use libre2 engine)
