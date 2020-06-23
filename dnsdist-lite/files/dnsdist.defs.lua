@@ -1,6 +1,8 @@
 -- just an example, not for production use
-setLocal("127.0.0.1:53")
-addLocal("192.168.1.1:53")
+setLocal("127.0.0.1:5300")
+addLocal("192.168.1.1:5300")
+--setLocal("127.0.0.1:53") -- for use as default resolver
+--addLocal("192.168.1.1:53") -- for use as default resolver
 controlSocket("127.0.0.1:5199")
 webserver("192.168.1.1:5198", "password", "magickey", {}, "192.168.1.0/24, 192.168.5.0/24")
 setACL({"127.0.0.1/8","192.168.1.0/24","192.168.5.0/24"})
@@ -22,6 +24,7 @@ newServer({address="8.8.4.4", pool={pools.ext}, name="google2", mustResolve=fals
 newServer({address="208.67.222.222", pool={pools.ext}, name="opendns1", mustResolve=false, checkTimeout=5000, checkInterval=60, maxCheckFailures=2, qps=2, order=30})
 newServer({address="208.67.220.220", pool={pools.ext}, name="opendns2", mustResolve=false, checkTimeout=5000, checkInterval=61, maxCheckFailures=2, qps=2, order=30})
 
+-- at this example we assume that local dnsmask resolver is already set to port 5353
 newServer({address="127.0.0.1:5353", pool={pools.lc}, name="local", checkName="openwrt.", mustResolve=true, checkTimeout=5000, checkInterval=5, maxCheckFailures=2, qps=100, order=10})
 
 newServer({address="127.0.0.1:5353", pool={pools.isp}, name="isp", mustResolve=true, checkTimeout=5000, checkInterval=62, maxCheckFailures=2, qps=10000, order=10})
