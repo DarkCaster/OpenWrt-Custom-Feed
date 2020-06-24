@@ -71,7 +71,7 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		-- add extra delay rule
 		if (type(ruleDef.dl)=="number") then
 			local delay=math.ceil(math.abs(ruleDef.dl))
-			print("Adding "..regexDebug..mainActionDebug.." delay: "..delay.." ms")
+			print("Adding "..regexDebug.." delay: "..delay.." ms")
 			addAction(regexRule,DelayAction(delay))
 		end
 
@@ -106,7 +106,7 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		-- add extra delay rule
 		if (type(ruleDef.dl)=="number") then
 			local delay=math.ceil(math.abs(ruleDef.dl))
-			print("Adding "..regexDebug..qtDebug.." delay: "..delay.." ms")
+			print("Adding "..regexDebug..qtDebug.."; delay: "..delay.." ms")
 			addAction(finalRule,DelayAction(delay))
 		end
 
