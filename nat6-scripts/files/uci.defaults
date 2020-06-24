@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# reinstall firewall chains regardless of current config version to ensure loading order of helper-scripts
+
 uci -q batch <<-EOT
 delete firewall.nat6_masq
 delete firewall.nat6_chains
@@ -18,6 +20,16 @@ set firewall.nat6_masq.reload=1
 commit firewall
 EOT
 
+# get current nat6 configuration version
+nat6_cfgver=$(uci 2>/dev/null get network.globals.nat6_cfgver || true)
+
+# if we upgrading from current nat6 configuration, do nothing
+[ "$nat6_cfgver" = "1" ] && exit 0
+
+#TODO: add logic for possible config migration, if we upgraded nat6_script from incompatible version
+
+#TODO: only for fresh installs ?
+# add example firewall rule
 rule_name=$(uci add firewall rule)
 uci -q batch <<-EOT
 set firewall.$rule_name.enabled='0'
@@ -30,12 +42,21 @@ set firewall.$rule_name.dest='lan'
 commit firewall
 EOT
 
+# we need ula prefix not starting with 'f'
+# because it will be considered local-subnet in windows and will not be used for outgoing connections
 uci set network.globals.ula_prefix="$(uci get network.globals.ula_prefix | sed 's/^./d/')"
 uci commit network
 
+# add options to enable ipv6 masquerading on WAN zone
 zone_id=$(uci show firewall | sed -ne "s/^firewall\.@zone\[\(\d\+\)\]\.name='wan'\$/\1/p")
 uci set firewall.@zone[${zone_id:?}].masq6=1
 uci set firewall.@zone[${zone_id:?}].masq6_privacy=0
 uci commit firewall
+
+# set nat6_cfgver variable
+uci -q batch <<-EOT
+set network.globals.nat6_cfgver='1'
+commit network
+EOT
 
 exit 0

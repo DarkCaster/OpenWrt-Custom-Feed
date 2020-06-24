@@ -5,6 +5,15 @@
 
 rm -f /tmp/luci-indexcache
 
+# get current miredo configuration version
+miredo_cfgver=$(uci 2>/dev/null get network.globals.miredo_cfgver || true)
+
+# if we upgrading from current miredo configuration, do nothing
+[ "$miredo_cfgver" = "1" ] && exit 0
+
+#TODO: add logic for possible config migration, if we upgraded miredo from incompatible version
+
+# create new interface for teredo
 uci -q batch <<-EOT
 set network.teredo=interface
 set network.teredo.proto='none'
@@ -13,15 +22,24 @@ set network.teredo.auto='1'
 commit network
 EOT
 
+#TODO: add some safety checks
+# add newly created teredo interface to WAN firewall zone
 cur_wan_nw=$(uci get firewall.@zone[1].network)
 uci -q batch <<-EOT
 set firewall.@zone[1].network="$cur_wan_nw teredo"
 commit firewall
 EOT
 
+# set dhcp.lan.ra_mtu option on order to improve compatibility with miredo
 uci -q batch <<-EOT
 set dhcp.lan.ra_mtu=1280
 commit dhcp
+EOT
+
+# set miredo_cfgver variable
+uci -q batch <<-EOT
+set network.globals.miredo_cfgver='1'
+commit network
 EOT
 
 exit 0
