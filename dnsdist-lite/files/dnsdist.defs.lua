@@ -52,8 +52,9 @@ definitions={
 	{rx="google.com",d=DNSRCode.NOERROR,t={DNSQType.A,DNSQType.ANY}}, -- answer instantly with NOERROR response for queries of type A (ipv4) or ANY
 	{rx="google.com",p=pools.ext,t={DNSQType.TXT}}, -- forward DNSQType.TXT queries to dns servers from "bypass" pool
 	{rx="google.com",p=pools.lc}, -- any other queries to google.com will be forwarded to dns servers from "local" pool
-	-- queries to example.com
-	{rx="example.com",p=pools.lc,nt={DNSQType.A,DNSQType.ANY}} -- all queries with qtypes NOT equal to DNSQType.A or DNSQType.ANY will be forwarded to "local" pool
+	-- queries to example.com: forward queries of types NOT equal to AAAA or ANY to local pool, answer to other queries with NOERROR with 1000ms delay
+	{rx="example.com",p=pools.lc,nt={DNSQType.AAAA,DNSQType.ANY}},
+	{rx="example.com",dl=1000,d=DNSRCode.NOERROR},
 ]]--
 	-- local subnet
 	{re2="(?i)^.*\\.lan$",p=pools.lc},
