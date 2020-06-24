@@ -65,7 +65,16 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		(type(ruleDef.t)=="nil" and type(ruleDef.nt)=="nil"),
 		"rule definition at position #"..ruleIdx.." must contain qtype definition as either 't' or 'nt' table, or neither")
 
+	assert(type(ruleDef.dl)=="nil" or type(ruleDef.dl)=="number", "rule definition at position #"..ruleIdx.." delay definition is not a number")
+
 	if (type(ruleDef.t)=="nil" and type(ruleDef.nt)=="nil") then
+		-- add extra delay rule
+		if (type(ruleDef.dl)=="number") then
+			local delay=math.ceil(math.abs(ruleDef.dl))
+			print("Adding "..regexDebug..mainActionDebug.." delay: "..delay.." ms")
+			addAction(regexRule,DelayAction(delay))
+		end
+
 		-- add simple regexp rule without matching queries against qtypes
 		print("Adding "..regexDebug..mainActionDebug)
 		addAction(regexRule,mainAction)
@@ -75,6 +84,7 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		local qt -- temporary value storing table with qtypes
 		local qtrules={} --table with QTypeRule rules
 		local qtrules_added=false --for checking against empty qtypes table
+		local finalRule
 		if (type(ruleDef.t)=="table") then qt=ruleDef.t else qtDebug=" NOT"..qtDebug; qt=ruleDef.nt end
 
 		-- iterate over 't' or 'nt' table, create QTypeRules and save it to qtrules table
@@ -86,13 +96,23 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		end
 		assert(qtrules_added==true,"rule definition at position #"..ruleIdx.." do not contain non-empty table with valid DNSQtype entries")
 
+		-- generate final rule
+		if (type(ruleDef.t)=="table") then
+			finalRule=AndRule({regexRule,OrRule(qtrules)})
+		else
+			finalRule=AndRule({regexRule,NotRule(OrRule(qtrules))})
+		end
+
+		-- add extra delay rule
+		if (type(ruleDef.dl)=="number") then
+			local delay=math.ceil(math.abs(ruleDef.dl))
+			print("Adding "..regexDebug..qtDebug.." delay: "..delay.." ms")
+			addAction(finalRule,DelayAction(delay))
+		end
+
 		-- add regexp rule with matching queries against list of qtypes
 		print("Adding "..regexDebug..qtDebug..mainActionDebug)
-		if (type(ruleDef.t)=="table") then
-			addAction(AndRule({regexRule,OrRule(qtrules)}),mainAction)
-		else
-			addAction(AndRule({regexRule,NotRule(OrRule(qtrules))}),mainAction)
-		end
+		addAction(finalRule,mainAction)
 	end
 end
 
