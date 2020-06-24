@@ -1,0 +1,25 @@
+diff -uprN dnsdist-1.5.0-rc3.old/dnsdist-console.cc dnsdist-1.5.0-rc3/dnsdist-console.cc
+--- dnsdist-1.5.0-rc3.old/dnsdist-console.cc	2020-06-17 20:34:16.000000000 +0300
++++ dnsdist-1.5.0-rc3/dnsdist-console.cc	2020-06-24 04:23:21.733772053 +0300
+@@ -59,20 +59,7 @@ static void feedConfigDelta(const std::s
+ static string historyFile(const bool &ignoreHOME = false)
+ {
+   string ret;
+-
+-  struct passwd pwd;
+-  struct passwd *result;
+-  char buf[16384];
+-  getpwuid_r(geteuid(), &pwd, buf, sizeof(buf), &result);
+-
+-  const char *homedir = getenv("HOME");
+-  if (result)
+-    ret = string(pwd.pw_dir);
+-  if (homedir && !ignoreHOME) // $HOME overrides what the OS tells us
+-    ret = string(homedir);
+-  if (ret.empty())
+-    ret = "."; // CWD if nothing works..
+-  ret.append("/.dnsdist_history");
++  ret = "/tmp/.dnsdist_history"
+   return ret;
+ }
+ 
