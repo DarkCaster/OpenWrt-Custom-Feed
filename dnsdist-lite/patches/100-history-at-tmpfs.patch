@@ -19,7 +19,7 @@ diff -uprN dnsdist-1.5.0-rc3.old/dnsdist-console.cc dnsdist-1.5.0-rc3/dnsdist-co
 -  if (ret.empty())
 -    ret = "."; // CWD if nothing works..
 -  ret.append("/.dnsdist_history");
-+  ret = "/tmp/.dnsdist_history"
++  ret = "/tmp/.dnsdist_history";
    return ret;
  }
  
