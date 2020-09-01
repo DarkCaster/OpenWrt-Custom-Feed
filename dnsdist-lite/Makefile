@@ -1,12 +1,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsdist-lite
-PKG_VERSION:=1.5.0-rc3
+PKG_VERSION:=1.5.0
 PKG_RELEASE:=1
 
 PKG_SOURCE:=dnsdist-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_URL:=https://downloads.powerdns.com/releases/
-PKG_HASH:=0fb9c0af83a77b78ad5eb52fa925602b6375c921b2d7ef2cf6fd0734c28d1006
+PKG_HASH:=2c07c4ef0c497f5223909ff181fe3ba7c6016962a2855cffe26b7f3609f27b58
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
 PKG_LICENSE:=GPL-2.0-only
