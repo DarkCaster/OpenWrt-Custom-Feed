@@ -52,7 +52,7 @@ define Package/stubby-alt/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stubby $(1)/usr/sbin/stubby-alt
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN)  ./files/stubby.init $(1)/etc/init.d/stubby-alt
+	$(INSTALL_BIN) ./files/stubby.init $(1)/etc/init.d/stubby-alt
 	$(INSTALL_DIR) $(1)/etc/stubby.d
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/etc/stubby.d/stubby.yml.example
 endef
