@@ -25,6 +25,9 @@ include $(INCLUDE_DIR)/cmake.mk
 #TARGET_CXXFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
 #TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
+TARGET_CFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer
+TARGET_CXXFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer
+
 define Package/stubby-alt/Default
   TITLE:=stubby-alt
   URL:=https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Daemon+-+Stubby
