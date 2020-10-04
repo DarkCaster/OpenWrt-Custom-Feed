@@ -57,4 +57,4 @@ define Package/stubby-alt/install
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/etc/stubby.d/stubby.yml.example
 endef
 
-$(eval $(call BuildPackage,stubby))
+$(eval $(call BuildPackage,stubby-alt))
