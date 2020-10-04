@@ -21,12 +21,9 @@ PKG_BUILD_PARALLEL:=1
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-#TARGET_CFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
-#TARGET_CXXFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
-#TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
-
-TARGET_CFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer
-TARGET_CXXFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer
+TARGET_CFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_CXXFLAGS+=-O2 -Werror=strict-aliasing -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
 define Package/stubby-alt/Default
   TITLE:=stubby-alt
