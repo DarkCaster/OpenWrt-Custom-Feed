@@ -37,7 +37,7 @@ define Package/stubby-alt
   SUBMENU:=IP Addresses and Names
   TITLE:=Stubby dns-resolver
   USERID:=stubby=410:stubby=410
-  DEPENDS:= +libyaml +getdns-alt +ca-certs
+  DEPENDS:= +libyaml +getdns-alt +libopenssl +ca-certs
 endef
 
 define Package/stubby-alt/description
