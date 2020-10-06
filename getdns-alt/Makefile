@@ -5,6 +5,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=getdns-alt
 PKG_VERSION:=1-git
 PKG_RELEASE:=1
+PKG_BUILD_DEPENDS:=openssl
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
@@ -35,7 +36,6 @@ define Package/getdns-alt
 	SECTION:=libs
 	CATEGORY:=Libraries
 	TITLE+= (library)
-	DEPENDS+= +libopenssl
 	MENU:=1
 endef
 

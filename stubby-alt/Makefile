@@ -5,6 +5,7 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=stubby-alt
 PKG_VERSION:=0.4.0-git
 PKG_RELEASE:=1
+PKG_BUILD_DEPENDS:=getdns-alt
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
@@ -37,7 +38,7 @@ define Package/stubby-alt
   SUBMENU:=IP Addresses and Names
   TITLE:=Stubby dns-resolver
   USERID:=stubby=410:stubby=410
-  DEPENDS:= +libyaml +getdns-alt +libopenssl +ca-certs
+  DEPENDS:= +libyaml +libopenssl +ca-certs
 endef
 
 define Package/stubby-alt/description
