@@ -8,7 +8,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_URL:=https://github.com/getdnsapi/stubby
+PKG_SOURCE_URL:=https://github.com/getdnsapi/stubby.git
 PKG_SOURCE_VERSION=4f27f6502101852d34457a82d739e87646a351f6
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
@@ -37,7 +37,7 @@ define Package/stubby-alt
   SUBMENU:=IP Addresses and Names
   TITLE:=Stubby dns-resolver
   USERID:=stubby=410:stubby=410
-  DEPENDS:= +libyaml +getdns +ca-certs
+  DEPENDS:= +libyaml +getdns-alt +ca-certs
 endef
 
 define Package/stubby-alt/description
@@ -56,5 +56,7 @@ define Package/stubby-alt/install
 	$(INSTALL_DIR) $(1)/etc/stubby.d
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/etc/stubby.d/stubby.yml.example
 endef
+
+CMAKE_OPTIONS += -DENABLE_GETDNS_STATIC_LINK=ON
 
 $(eval $(call BuildPackage,stubby-alt))
