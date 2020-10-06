@@ -40,7 +40,7 @@ define Package/getdns-alt
 endef
 
 define Package/getdns-alt/description
-	This package contains the getdns library (libgetdns) for use with stubby-alt package
+  This package contains the getdns library (libgetdns) for use with stubby-alt package
 endef
 
 CMAKE_OPTIONS += -DBUILD_LIBEV=OFF
