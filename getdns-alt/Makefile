@@ -26,17 +26,17 @@ TARGET_CXXFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-ob
 TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
 define Package/getdns-alt/Default
-  TITLE:=getdns-alt
-  URL:=https://getdnsapi.net/
+	TITLE:=getdns-alt
+	URL:=https://getdnsapi.net/
 endef
 
 define Package/getdns-alt
-  $(call Package/getdns-alt/Default)
-  SECTION:=libs
-  CATEGORY:=Libraries
-  TITLE+= (library)
-  DEPENDS+= +libopenssl
-  MENU:=1
+	$(call Package/getdns-alt/Default)
+	SECTION:=libs
+	CATEGORY:=Libraries
+	TITLE+= (library)
+	DEPENDS+= +libopenssl
+	MENU:=1
 endef
 
 define Package/getdns-alt/description
