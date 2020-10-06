@@ -26,22 +26,22 @@ TARGET_CXXFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-ob
 TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
 define Package/stubby-alt/Default
-	TITLE:=stubby-alt
-	URL:=https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Daemon+-+Stubby
+  TITLE:=stubby-alt
+  URL:=https://dnsprivacy.org/wiki/display/DP/DNS+Privacy+Daemon+-+Stubby
 endef
 
 define Package/stubby-alt
-	$(call Package/stubby-alt/Default)
-	SECTION:=net
-	CATEGORY:=Network
-	SUBMENU:=IP Addresses and Names
-	TITLE:=Stubby dns-resolver
-	USERID:=stubby=410:stubby=410
-	DEPENDS:= +libyaml +getdns-alt +libopenssl +ca-certs
+  $(call Package/stubby-alt/Default)
+  SECTION:=net
+  CATEGORY:=Network
+  SUBMENU:=IP Addresses and Names
+  TITLE:=Stubby dns-resolver
+  USERID:=stubby=410:stubby=410
+  DEPENDS:= +libyaml +getdns-alt +libopenssl +ca-certs
 endef
 
 define Package/stubby-alt/description
-	This package contains the Stubby daemon. This build implements alternative init approach using native configuration and multiple daemon-instances support.
+  This package contains the Stubby daemon. This build implements alternative init approach using native configuration and multiple daemon-instances support.
 endef
 
 define Package/stubby-alt/conffiles
@@ -49,12 +49,12 @@ define Package/stubby-alt/conffiles
 endef
 
 define Package/stubby-alt/install
-	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stubby $(1)/usr/sbin/stubby-alt
-	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/stubby.init $(1)/etc/init.d/stubby-alt
-	$(INSTALL_DIR) $(1)/etc/stubby.d
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/etc/stubby.d/stubby.yml.example
+  $(INSTALL_DIR) $(1)/usr/sbin
+  $(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stubby $(1)/usr/sbin/stubby-alt
+  $(INSTALL_DIR) $(1)/etc/init.d
+  $(INSTALL_BIN) ./files/stubby.init $(1)/etc/init.d/stubby-alt
+  $(INSTALL_DIR) $(1)/etc/stubby.d
+  $(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/etc/stubby.d/stubby.yml.example
 endef
 
 CMAKE_OPTIONS += -DENABLE_GETDNS_STATIC_LINK=ON
