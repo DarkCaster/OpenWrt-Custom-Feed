@@ -32,13 +32,14 @@ define Package/dnsdist-lite
 	  +libcap \
 	  +libedit \
 	  +libfstrm \
+	  +protobuf \
 	  +lua \
 	  +re2
   URL:=https://dnsdist.org/
 endef
 
 define Package/dnsdist-lite/description
-  trimmed down version of dnsdist: all protobuf- and encryption-related options were disabled, added sample configuration script
+  trimmed down version of dnsdist: all encryption-related options were disabled, added sample configuration script
 endef
 
 define Package/dnsdist-lite/conffiles
@@ -52,7 +53,7 @@ CONFIGURE_ARGS+= \
 	--disable-dnscrypt \
 	--without-libsodium \
 	--enable-dnstap \
-	--without-protobuf \
+	--with-protobuf \
 	--disable-dns-over-tls \
 	--disable-dns-over-https \
 	--disable-systemd \
