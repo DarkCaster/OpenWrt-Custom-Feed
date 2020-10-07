@@ -53,7 +53,7 @@ CONFIGURE_ARGS+= \
 	--disable-dnscrypt \
 	--without-libsodium \
 	--enable-dnstap \
-	--with-protobuf \
+	--without-protobuf \
 	--disable-dns-over-tls \
 	--disable-dns-over-https \
 	--disable-systemd \
