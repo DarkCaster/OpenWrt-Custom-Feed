@@ -31,6 +31,7 @@ define Package/dnsdist-lite
 	  +libatomic \
 	  +libcap \
 	  +libedit \
+	  +libfstrm \
 	  +lmdb \
 	  +lua \
 	  +re2
