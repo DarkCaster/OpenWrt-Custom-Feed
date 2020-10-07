@@ -32,7 +32,6 @@ define Package/dnsdist-lite
 	  +libcap \
 	  +libedit \
 	  +libfstrm \
-	  +lmdb \
 	  +lua \
 	  +re2
   URL:=https://dnsdist.org/
@@ -67,7 +66,7 @@ CONFIGURE_ARGS+= \
 	--without-libssl \
 	--without-gnutls \
 	--with-libcrypto=/dev/null \
-	--with-lmdb
+	--without-lmdb
 
 CONFIGURE_VARS+= \
 	LIBCAP_LIBS=-lcap \
