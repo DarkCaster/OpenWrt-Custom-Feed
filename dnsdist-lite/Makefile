@@ -51,8 +51,8 @@ endef
 CONFIGURE_ARGS+= \
 	--disable-dnscrypt \
 	--without-libsodium \
-	--disable-dnstap \
-	--without-protobuf \
+	--enable-dnstap \
+	--with-protobuf \
 	--disable-dns-over-tls \
 	--disable-dns-over-https \
 	--disable-systemd \
