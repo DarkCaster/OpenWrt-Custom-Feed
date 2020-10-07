@@ -16,7 +16,7 @@ PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
 
 PKG_ASLR_PIE:=0
-PKG_BUILD_DEPENDS:=libcap libre2 tinycdb lua libedit
+PKG_BUILD_DEPENDS:=protobuf/host libcap libre2 tinycdb lua libedit
 PKG_BUILD_DIR:=$(BUILD_DIR)/dnsdist-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
