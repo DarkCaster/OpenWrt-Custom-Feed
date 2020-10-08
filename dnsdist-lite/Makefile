@@ -1,6 +1,6 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=dnsdist-lite
+PKG_NAME:=dnsdist-alt
 PKG_VERSION:=1.5.1
 PKG_RELEASE:=1
 
@@ -21,11 +21,11 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/dnsdist-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
-define Package/dnsdist-lite
+define Package/dnsdist-alt
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
-  TITLE:=trimmed down version of dnsdist
+  TITLE:=alternative dnsdist build
   DEPENDS:= \
 	  +boost \
 	  +libatomic \
@@ -38,11 +38,11 @@ define Package/dnsdist-lite
   URL:=https://dnsdist.org/
 endef
 
-define Package/dnsdist-lite/description
-  trimmed down version of dnsdist: all encryption-related options were disabled, added sample configuration script
+define Package/dnsdist-alt/description
+  alternative build of dnsdist: some features removed, added instant-flush feature to remote-loggers, added custom configuration script
 endef
 
-define Package/dnsdist-lite/conffiles
+define Package/dnsdist-alt/conffiles
 /etc/dnsdist.cfg.lua
 /etc/dnsdist.defs.lua
 /etc/dnsdist.post.lua
@@ -76,7 +76,7 @@ CONFIGURE_VARS+= \
 TARGET_CFLAGS+=-Os
 TARGET_CXXFLAGS+=-Os
 
-define Package/dnsdist-lite/install
+define Package/dnsdist-alt/install
 	$(INSTALL_DIR) $(1)/etc
 	$(INSTALL_CONF) ./files/dnsdist.cfg.lua $(1)/etc/dnsdist.cfg.lua
 	$(INSTALL_CONF) ./files/dnsdist.defs.lua $(1)/etc/dnsdist.defs.lua
@@ -89,4 +89,4 @@ define Package/dnsdist-lite/install
 	$(INSTALL_BIN) ./files/uci.defaults $(1)/etc/uci-defaults/99-dnsdist
 endef
 
-$(eval $(call BuildPackage,dnsdist-lite))
+$(eval $(call BuildPackage,dnsdist-alt))
