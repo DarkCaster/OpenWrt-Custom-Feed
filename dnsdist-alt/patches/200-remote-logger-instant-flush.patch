@@ -17,7 +17,7 @@ diff -uprN dnsdist-1.5.1.old/dnsdist-lua-bindings-protobuf.cc dnsdist-1.5.1/dnsd
    g_lua.writeFunction("newFrameStreamUnixLogger", [client,configCheck](const std::string& address, boost::optional<std::unordered_map<std::string, unsigned int>> params) {
 diff -uprN dnsdist-1.5.1.old/remote_logger.cc dnsdist-1.5.1/remote_logger.cc
 --- dnsdist-1.5.1.old/remote_logger.cc	2020-07-30 12:20:01.000000000 +0300
-+++ dnsdist-1.5.1/remote_logger.cc	2020-10-09 01:59:24.583073344 +0300
++++ dnsdist-1.5.1/remote_logger.cc	2020-10-09 02:07:23.688973591 +0300
 @@ -97,7 +97,7 @@ bool CircularWriteBuffer::flush(int fd)
    return true;
  }
@@ -27,7 +27,7 @@ diff -uprN dnsdist-1.5.1.old/remote_logger.cc dnsdist-1.5.1/remote_logger.cc
  {
    if (!d_asyncConnect) {
      reconnect();
-@@ -167,6 +167,25 @@ void RemoteLogger::queueData(const std::
+@@ -167,6 +167,18 @@ void RemoteLogger::queueData(const std::
  
    d_writer.write(data);
    ++d_queued;
@@ -35,17 +35,10 @@ diff -uprN dnsdist-1.5.1.old/remote_logger.cc dnsdist-1.5.1/remote_logger.cc
 +  if(d_instantFlush)
 +  {
 +    try {
-+      if (!d_socket) {
-+        ++d_drops;
++      if (!d_socket || !d_writer.flush(d_socket->getHandle()))
 +        return;
-+      }
-+      if (!d_writer.flush(d_socket->getHandle())) {
-+        ++d_drops;
-+        return;
-+      }
 +    }
 +    catch(const std::exception& e) {
-+      ++d_drops;
 +      d_socket.reset();
 +      return;
 +    }
