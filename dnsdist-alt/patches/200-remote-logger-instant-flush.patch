@@ -17,13 +17,13 @@ diff -uprN dnsdist-1.5.1.old/dnsdist-lua-bindings-protobuf.cc dnsdist-1.5.1/dnsd
    g_lua.writeFunction("newFrameStreamUnixLogger", [client,configCheck](const std::string& address, boost::optional<std::unordered_map<std::string, unsigned int>> params) {
 diff -uprN dnsdist-1.5.1.old/remote_logger.cc dnsdist-1.5.1/remote_logger.cc
 --- dnsdist-1.5.1.old/remote_logger.cc	2020-07-30 12:20:01.000000000 +0300
-+++ dnsdist-1.5.1/remote_logger.cc	2020-10-09 02:07:23.688973591 +0300
++++ dnsdist-1.5.1/remote_logger.cc	2020-10-09 02:09:39.970613590 +0300
 @@ -97,7 +97,7 @@ bool CircularWriteBuffer::flush(int fd)
    return true;
  }
  
 -RemoteLogger::RemoteLogger(const ComboAddress& remote, uint16_t timeout, uint64_t maxQueuedBytes, uint8_t reconnectWaitTime, bool asyncConnect): d_writer(maxQueuedBytes), d_remote(remote), d_timeout(timeout), d_reconnectWaitTime(reconnectWaitTime), d_asyncConnect(asyncConnect)
-+RemoteLogger::RemoteLogger(const ComboAddress& remote, uint16_t timeout, uint64_t maxQueuedBytes, uint8_t reconnectWaitTime, bool asyncConnect, bool instantFlush): d_writer(maxQueuedBytes), d_remote(remote), d_timeout(timeout), d_reconnectWaitTime(reconnectWaitTime), d_asyncConnect(asyncConnect), d_instantFlush(instantFlush))
++RemoteLogger::RemoteLogger(const ComboAddress& remote, uint16_t timeout, uint64_t maxQueuedBytes, uint8_t reconnectWaitTime, bool asyncConnect, bool instantFlush): d_writer(maxQueuedBytes), d_remote(remote), d_timeout(timeout), d_reconnectWaitTime(reconnectWaitTime), d_asyncConnect(asyncConnect), d_instantFlush(instantFlush)
  {
    if (!d_asyncConnect) {
      reconnect();
