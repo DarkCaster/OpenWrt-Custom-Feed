@@ -39,7 +39,7 @@ define Package/dnsdist-alt
 endef
 
 define Package/dnsdist-alt/description
-  alternative build of dnsdist: some features removed, added instant-flush feature to remote-loggers, added custom configuration script
+  alternative build of dnsdist: some features removed, added instant-flush feature to remote-logger (as extra boolean param for newRemoteLogger lua-function), added custom configuration script
 endef
 
 define Package/dnsdist-alt/conffiles
