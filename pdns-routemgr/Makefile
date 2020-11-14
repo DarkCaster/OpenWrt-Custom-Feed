@@ -36,8 +36,8 @@ define Package/pdns-routemgr
 endef
 
 define Package/pdns-routemgr/description
-  Install and remove ipv4/ipv6 routes based on DNS answers from PowerDNS remote-logger to provide access to company-internal resources via separate network or gateway.
-  EXPERIMENTAL SOFTWARE, NOT FOR PRODUCTION USE!
+Install and remove ipv4/ipv6 routes based on DNS answers from PowerDNS remote-logger to provide access to company-internal resources via separate network or gateway.
+EXPERIMENTAL SOFTWARE, NOT FOR PRODUCTION USE!
 endef
 
 define Package/pdns-routemgr/conffiles
