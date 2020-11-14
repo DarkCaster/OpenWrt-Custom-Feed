@@ -44,7 +44,7 @@ define Package/pdns-routemgr/conffiles
 /etc/config/pdns-routemgr
 endef
 
-define Package/dnsdist-alt/install
+define Package/pdns-routemgr/install
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/pdns-routemgr $(1)/etc/config/pdns-routemgr
 	$(INSTALL_DIR) $(1)/etc/init.d
