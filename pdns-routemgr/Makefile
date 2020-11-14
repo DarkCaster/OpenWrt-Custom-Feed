@@ -30,13 +30,13 @@ define Package/pdns-routemgr
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=IP Addresses and Names
-  TITLE:=PDNS-RouteManager
+  TITLE:=IPv6 and IPv6 routes manager. EXPERIMENTAL, NOT FOR PRODUCTION USE!
   DEPENDS:= +protobuf
   URL:=https://github.com/DarkCaster/PDNS-RouteManager
 endef
 
 define Package/pdns-routemgr/description
-  Install and remove ipv4/ipv6 routes based on DNS answers received from PowerDNS remote-logger. Intended to provide access to organization-internal resources via separate network interface or gateway.
+  Install and remove ipv4/ipv6 routes based on DNS answers received from PowerDNS remote-logger. Intended to provide access to organization-internal resources via separate network interface or gateway. EXPERIMENTAL SOFTWARE, NOT FOR PRODUCTION USE!
 endef
 
 define Package/pdns-routemgr/conffiles
