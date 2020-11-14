@@ -2,13 +2,13 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=pdns-routemgr
 PKG_VERSION:=0.1
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 PKG_BUILD_DEPENDS:=protobuf/host
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/DarkCaster/PDNS-RouteManager.git
-PKG_SOURCE_VERSION=1495e433b1fc87833ab3941ac7aab0cd8b348e4a
+PKG_SOURCE_VERSION=02da50dccc8aef0920b3044c236d34e2e8d78ae7
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
 PKG_LICENSE:=GPL-2.0-only
