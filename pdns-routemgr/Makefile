@@ -24,8 +24,6 @@ TARGET_CFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-obje
 TARGET_CXXFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
 TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
-include $(INCLUDE_DIR)/package.mk
-
 define Package/pdns-routemgr
   SECTION:=net
   CATEGORY:=Network
