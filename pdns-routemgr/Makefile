@@ -8,7 +8,7 @@ PKG_BUILD_DEPENDS:=protobuf/host
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/DarkCaster/PDNS-RouteManager.git
-PKG_SOURCE_VERSION=b6eaec1c0736d2202e71a130ebc510d5b52fbf0f
+PKG_SOURCE_VERSION=1495e433b1fc87833ab3941ac7aab0cd8b348e4a
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
 PKG_LICENSE:=GPL-2.0-only
