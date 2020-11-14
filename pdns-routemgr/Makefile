@@ -3,7 +3,6 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=pdns-routemgr
 PKG_VERSION:=0.1
 PKG_RELEASE:=1
-PKG_BUILD_DEPENDS:=protobuf/host
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/DarkCaster/PDNS-RouteManager.git
@@ -16,6 +15,9 @@ PKG_LICENSE_FILES:=COPYING
 
 CMAKE_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
+
+PKG_BUILD_DEPENDS:=protobuf/host
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
