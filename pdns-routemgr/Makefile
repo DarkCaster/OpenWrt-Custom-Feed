@@ -6,7 +6,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/DarkCaster/PDNS-RouteManager.git
-PKG_SOURCE_VERSION=7dffc99ea522379c4165ab899e147fae18cf50f7
+PKG_SOURCE_VERSION=30a419b9ba76702f495f4f0a0b8862179937eed4
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
@@ -46,13 +46,11 @@ endef
 
 define Package/pdns-routemgr/install
 	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/pdns-routemgr $(1)/etc/config/pdns-routemgr
+	$(INSTALL_CONF) ./files/pdns-routemgr.config $(1)/etc/config/pdns-routemgr
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/pdns-routemgr .init $(1)/etc/init.d/pdns-routemgr
+	$(INSTALL_BIN) ./files/pdns-routemgr.init $(1)/etc/init.d/pdns-routemgr
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/pdns-routemgr $(1)/usr/sbin/pdns-routemgr
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/uci.defaults $(1)/etc/uci-defaults/99-pdns-routemgr
 endef
 
 $(eval $(call BuildPackage,pdns-routemgr))
