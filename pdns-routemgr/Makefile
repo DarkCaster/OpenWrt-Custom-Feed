@@ -6,7 +6,7 @@ PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/DarkCaster/PDNS-RouteManager.git
-PKG_SOURCE_VERSION=f23bf399d4a99770ffc1b5b72387ad29fefa7a94
+PKG_SOURCE_VERSION=521be51e5d6d8a187bd10b8ce1e2eccbe2ab17de
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
@@ -22,9 +22,9 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
 include $(INCLUDE_DIR)/package.mk
 include $(INCLUDE_DIR)/cmake.mk
 
-###TARGET_CFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
-###TARGET_CXXFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
-###TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_CFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_CXXFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
+TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
 define Package/pdns-routemgr
   SECTION:=net
