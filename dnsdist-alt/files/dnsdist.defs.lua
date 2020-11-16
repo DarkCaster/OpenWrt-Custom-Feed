@@ -55,6 +55,8 @@ definitions={
 	-- queries to example.com: forward queries of types NOT equal to AAAA or ANY to local pool, answer to other queries with NOERROR with 1000ms delay
 	{rx="example.com",p=pools.lc,nt={DNSQType.AAAA,DNSQType.ANY}},
 	{rx="example.com",dl=1000,d=DNSRCode.NOERROR},
+	-- queries to youtube.com: log answers (la) via logger object (created by newRemoteLogger), and delay answer (dla) by 100ms. delay answers will be performed after any other answer-actions (loggins so far)
+	{rx="example.com",dla=100,la=logger},
 ]]--
 	-- local subnet
 	{re2="(?i)^.*\\.lan$",p=pools.lc},

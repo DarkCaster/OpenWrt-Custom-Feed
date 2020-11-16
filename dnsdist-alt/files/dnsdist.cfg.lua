@@ -27,6 +27,22 @@ rulesTable=loadstring("return " .. rulesDefTableName)()
 
 assert(type(rulesTable)=="table","global table with name '" .. rulesDefTableName .. "' is not found")
 
+function tryAddQueryDelay(ruleIdx,ruleDef,regexRule)
+	assert(type(ruleDef.dl)=="nil" or type(ruleDef.dl)=="number", "rule definition at position #"..ruleIdx.." delay definition is not a number")
+	if (type(ruleDef.dl)=="number") then
+		local delay=math.ceil(math.abs(ruleDef.dl))
+		addAction(regexRule,DelayAction(delay))
+	end
+end
+
+function tryAddResponseDelay(ruleIdx,ruleDef,regexRule)
+	assert(type(ruleDef.dla)=="nil" or type(ruleDef.dla)=="number", "rule definition at position #"..ruleIdx.." answer delay definition is not a number")
+	if (type(ruleDef.dla)=="number") then
+		local delay=math.ceil(math.abs(ruleDef.dla))
+		addResponseAction(regexRule,DelayResponseAction(delay))
+	end
+end
+
 -- parse definitions table and generate rules. this code may be non optimal
 for ruleIdx,ruleDef in ipairs(rulesTable) do
 	assert(type(ruleDef)=="table","rule definition at position #"..ruleIdx.." must be a table")
@@ -34,27 +50,28 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 
 	-- create regex rule selector, using either standard regex or re2 engines
 	local regexRule
-	local regexDebug -- for printing verbose messages about added rules
 	if(type(ruleDef.rx)=="string") then
-		regexDebug="regex rule: '"..ruleDef.rx.."';"
+		print("Pocessing definition #"..ruleIdx.." -> regex rule: '"..ruleDef.rx.."';")
 		regexRule=RegexRule(ruleDef.rx)
-	else
-		regexDebug="re2 rule: '"..ruleDef.re2.."';"
+	elseif(type(ruleDef.re2)=="string") then
+		print("Pocessing definition #"..ruleIdx.." -> re2 rule: '"..ruleDef.rx.."';")
 		regexRule=RE2Rule(ruleDef.re2)
+	else
+		assert(false, "unsupported rule definition at position #"..ruleIdx..)
 	end
 
-	local mainActionDebug -- for printing verbose messages about added actiom
-	local mainAction
-	if (type(ruleDef.p)=="string" and type(ruleDef.d)=="nil") then
-		mainAction=PoolAction(ruleDef.p)
-		mainActionDebug=" into pool "..ruleDef.p
-	elseif (type(ruleDef.p)=="nil" and type(ruleDef.d)=="number") then
-		if (ruleDef.d<0) then
-			mainAction=DropAction()
-			mainActionDebug=" to be dropped"
-		else
-			mainAction=RCodeAction(ruleDef.d)
-			mainActionDebug=" to instant answer with DNSRCode: "..ruleDef.d
+	-- create main actions for queries and responses
+	local queryAction
+	local respAction
+	if (type(ruleDef.p)=="nil" and type(ruleDef.d)=="number") then
+		-- query action
+		if (ruleDef.d<0) then queryAction=DropAction() else queryAction=RCodeAction(ruleDef.d) end
+		-- no response action will be created when droping queries
+	elseif (type(ruleDef.p)=="string" and type(ruleDef.d)=="nil")  then
+		queryAction=PoolAction(ruleDef.p)
+		-- response action (currently only logging)
+		if (type(ruleDef.la)~="nil") then
+			respAction=RemoteLogResponseAction(ruleDef.la)
 		end
 	else
 		assert(false, "rule definition at position #"..ruleIdx.." must contain either 'p' pool-action definition or 'd' drop-action definition")
@@ -65,32 +82,26 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		(type(ruleDef.t)=="nil" and type(ruleDef.nt)=="nil"),
 		"rule definition at position #"..ruleIdx.." must contain qtype definition as either 't' or 'nt' table, or neither")
 
-	assert(type(ruleDef.dl)=="nil" or type(ruleDef.dl)=="number", "rule definition at position #"..ruleIdx.." delay definition is not a number")
-
 	if (type(ruleDef.t)=="nil" and type(ruleDef.nt)=="nil") then
-		-- add extra delay rule
-		if (type(ruleDef.dl)=="number") then
-			local delay=math.ceil(math.abs(ruleDef.dl))
-			print("Adding "..regexDebug.." delay: "..delay.." ms")
-			addAction(regexRule,DelayAction(delay))
+		-- simple regexp rules without matching queries against qtypes
+		tryAddQueryDelay(ruleIdx,ruleDef,regexRule)
+		addAction(regexRule,queryAction)
+		if (type(respAction)~="nil") then
+			addResponseAction(regexRule,respAction)
+			tryAddResponseDelay(ruleIdx,ruleDef,regexRule)
 		end
-
-		-- add simple regexp rule without matching queries against qtypes
-		print("Adding "..regexDebug..mainActionDebug)
-		addAction(regexRule,mainAction)
 	else
-		-- add action with qname-regexp and qtypes matching
-		local qtDebug=" matching QTypes: " -- for printing verbose messages about added rules
-		local qt -- temporary value storing table with qtypes
-		local qtrules={} --table with QTypeRule rules
-		local qtrules_added=false --for checking against empty qtypes table
+		-- create action with qname-regexp and qtypes matching
+		local qtrules={}
 		local finalRule
-		if (type(ruleDef.t)=="table") then qt=ruleDef.t else qtDebug=" NOT"..qtDebug; qt=ruleDef.nt end
+
+		local qt -- temporary value storing table with qtypes
+		if (type(ruleDef.t)=="table") then qt=ruleDef.t else qt=ruleDef.nt end
 
 		-- iterate over 't' or 'nt' table, create QTypeRules and save it to qtrules table
+		local qtrules_added=false -- for checking against empty qtypes table
 		for qi,q in ipairs(qt) do
 			assert(type(q)=="number","rule definition at position #"..ruleIdx.." contains invalid DNSQtype at position #"..qi)
-			qtDebug=qtDebug..q..","
 			table.insert(qtrules,QTypeRule(q))
 			qtrules_added=true
 		end
@@ -103,16 +114,13 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 			finalRule=AndRule({regexRule,NotRule(OrRule(qtrules))})
 		end
 
-		-- add extra delay rule
-		if (type(ruleDef.dl)=="number") then
-			local delay=math.ceil(math.abs(ruleDef.dl))
-			print("Adding "..regexDebug..qtDebug.."; delay: "..delay.." ms")
-			addAction(finalRule,DelayAction(delay))
+		-- add final rules and optional delays
+		tryAddQueryDelay(ruleIdx,ruleDef,finalRule)
+		addAction(finalRule,queryAction)
+		if (type(respAction)~="nil") then
+			addResponseAction(finalRule,respAction)
+			tryAddResponseDelay(ruleIdx,ruleDef,finalRule)
 		end
-
-		-- add regexp rule with matching queries against list of qtypes
-		print("Adding "..regexDebug..qtDebug..mainActionDebug)
-		addAction(finalRule,mainAction)
 	end
 end
 
