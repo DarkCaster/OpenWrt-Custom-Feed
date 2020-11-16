@@ -38,7 +38,8 @@ start_service() {
 		mgperc="$(uci -q get $routemgr_cfg.@instance[$inum].mgperc)"
 		mgretr="$(uci -q get $routemgr_cfg.@instance[$inum].mgretr)"
 		#define new instance
-		procd_open_instance "pdns-rm:$inum"
+		procd_open_instance "rmgr$inum"
+		procd_set_param nice -15
 		procd_set_param command "$routemgr"
 		#set params
 		[ ! -z "$listen" ] && procd_append_param command -l "$listen"
