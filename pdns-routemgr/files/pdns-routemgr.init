@@ -20,7 +20,11 @@ start_service() {
 	local mgperc=""
 	local mgretr=""
 	while [ ! -z "$(uci -q get $routemgr_cfg.@instance[$inum])" ]; do
-		[ "$(uci -q get $routemgr_cfg.@instance[$inum].enabled)" != "1" ] && continue
+		#skip disabled sections
+		if [ "$(uci -q get $routemgr_cfg.@instance[$inum].enabled)" != "1" ]; then
+			inum=$(expr $inum + 1)
+			continue
+		fi
 		#fillup params
 		listen="$(uci -q get $routemgr_cfg.@instance[$inum].listen)"
 		port="$(uci -q get $routemgr_cfg.@instance[$inum].port)"
