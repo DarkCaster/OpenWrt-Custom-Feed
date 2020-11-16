@@ -54,10 +54,10 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 		print("Pocessing definition #"..ruleIdx.." -> regex rule: '"..ruleDef.rx.."';")
 		regexRule=RegexRule(ruleDef.rx)
 	elseif(type(ruleDef.re2)=="string") then
-		print("Pocessing definition #"..ruleIdx.." -> re2 rule: '"..ruleDef.rx.."';")
+		print("Pocessing definition #"..ruleIdx.." -> re2 rule: '"..ruleDef.re2.."';")
 		regexRule=RE2Rule(ruleDef.re2)
 	else
-		assert(false, "unsupported rule definition at position #"..ruleIdx..)
+		assert(false, "unsupported rule definition at position #"..ruleIdx)
 	end
 
 	-- create main actions for queries and responses
