@@ -19,6 +19,11 @@ start_service() {
 	local mgint=""
 	local mgperc=""
 	local mgretr=""
+	local rt4sz="$(uci -q get $routemgr_cfg.@system[0].minv4rtsz)"
+	local rt6sz="$(uci -q get $routemgr_cfg.@system[0].minv6rtsz)"
+	#set routing table sizes
+	[ ! -z "$rt4sz" ] && [ "$(sysctl -n net.ipv4.route.max_size)" -lt "$rt4sz" ] && sysctl -w net.ipv4.route.max_size="$rt4sz"
+	[ ! -z "$rt6sz" ] && [ "$(sysctl -n net.ipv6.route.max_size)" -lt "$rt6sz" ] && sysctl -w net.ipv6.route.max_size="$rt6sz"
 	while [ ! -z "$(uci -q get $routemgr_cfg.@instance[$inum])" ]; do
 		#skip disabled sections
 		if [ "$(uci -q get $routemgr_cfg.@instance[$inum].enabled)" != "1" ]; then
