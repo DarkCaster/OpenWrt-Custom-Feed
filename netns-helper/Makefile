@@ -14,7 +14,7 @@ define Package/netns-helper
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=Helpers for setting-up network namespaces based on veth-pair devices with minimal env on boot
-	DEPENDS:= +kmod-veth +@KERNEL_NET_NS
+	DEPENDS:= +kmod-veth +@KERNEL_NET_NS +@KERNEL_NAMESPACES
 	URL:=https://github.com/DarkCaster/OpenWrt-Custom-Feed
 endef
 
