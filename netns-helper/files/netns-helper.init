@@ -26,8 +26,6 @@ start() {
 		#fillup variables
 		ifname="$(uci -q get $netns_cfg.@netns[$inum].ifname)"
 		nsname="$(uci -q get $netns_cfg.@netns[$inum].nsname)"
-		[ -z "$ifname" ] && continue
-		[ -z "$nsname" ] && continue
 		ipv4addr="$(uci -q get $netns_cfg.@netns[$inum].ipv4addr)"
 		ipv6addr="$(uci -q get $netns_cfg.@netns[$inum].ipv6addr)"
 		gateway4="$(uci -q get $netns_cfg.@netns[$inum].gateway4)"
@@ -35,15 +33,18 @@ start() {
 		resolv="$(uci -q get $netns_cfg.@netns[$inum].resolv)"
 		hosts="$(uci -q get $netns_cfg.@netns[$inum].hosts)"
 		hostname="$(uci -q get $netns_cfg.@netns[$inum].hostname)"
+		#try next netns
+		inum=$(expr $inum + 1)
+		[ -z "$ifname" ] && continue
+		[ -z "$nsname" ] && continue
 		#create veth devices pair and netns
 		ip netns add "$nsname" || continue
 		ip link add "${ifname}_ext" type veth peer "${ifname}_int" netns "$nsname" || continue
-		ip netns exec "$nsname" ifconfig lo 127.0.0.1/8
 		#add ip address and set gateway
-		[ ! -z "$ipv4addr" ] && ip netns exec "$nsname" ifconfig "${ifname}_int" "$ipv4addr"
-		[ ! -z "$ipv6addr" ] && ip netns exec "$nsname" ifconfig "${ifname}_int" "$ipv6addr"
-		#try next netns
-		inum=$(expr $inum + 1)
+		ip netns exec "$nsname" ip link set dev lo up
+		ip netns exec "$nsname" ip link set dev "${ifname}_int" up
+		[ ! -z "$ipv4addr" ] && ip netns exec "$nsname" ip addr add "$ipv4addr" dev "${ifname}_int"
+		[ ! -z "$ipv6addr" ] && ip netns exec "$nsname" ip addr add "$ipv6addr" dev "${ifname}_int"
 	done
 }
 
