@@ -13,9 +13,6 @@ start() {
 	local ipv6addr=""
 	local gateway4=""
 	local gateway6=""
-	local resolv=""
-	local hosts=""
-	local hostname=""
 	#iterate over netns sections
 	while [ ! -z "$(uci -q get $netns_cfg.@netns[$inum])" ]; do
 		#skip disabled sections
@@ -30,9 +27,6 @@ start() {
 		ipv6addr="$(uci -q get $netns_cfg.@netns[$inum].ipv6addr)"
 		gateway4="$(uci -q get $netns_cfg.@netns[$inum].gateway4)"
 		gateway6="$(uci -q get $netns_cfg.@netns[$inum].gateway6)"
-		resolv="$(uci -q get $netns_cfg.@netns[$inum].resolv)"
-		hosts="$(uci -q get $netns_cfg.@netns[$inum].hosts)"
-		hostname="$(uci -q get $netns_cfg.@netns[$inum].hostname)"
 		#try next netns
 		inum=$(expr $inum + 1)
 		[ -z "$ifname" ] && continue
@@ -43,8 +37,10 @@ start() {
 		#add ip address and set gateway
 		ip netns exec "$nsname" ip link set dev lo up
 		ip netns exec "$nsname" ip link set dev "${ifname}_int" up
-		[ ! -z "$ipv4addr" ] && ip netns exec "$nsname" ip addr add "$ipv4addr" dev "${ifname}_int"
-		[ ! -z "$ipv6addr" ] && ip netns exec "$nsname" ip addr add "$ipv6addr" dev "${ifname}_int"
+		[ ! -z "$ipv4addr" ] && ip netns exec "$nsname" ip -4 addr add "$ipv4addr" brd + dev "${ifname}_int"
+		[ ! -z "$ipv6addr" ] && ip netns exec "$nsname" ip -6 addr add "$ipv6addr" dev "${ifname}_int"
+		[ ! -z "$gateway4" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int"
+		[ ! -z "$gateway6" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int"
 	done
 }
 
