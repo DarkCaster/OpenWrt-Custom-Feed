@@ -13,7 +13,7 @@ include $(INCLUDE_DIR)/version.mk
 define Package/netns-helper
 	SECTION:=net
 	CATEGORY:=Network
-	TITLE:=Helper for setting-up network namespaces based on veth-pair devices with minimal env on boot
+	TITLE:=Helper for setting-up network namespaces
 	DEPENDS:= +kmod-veth +@KERNEL_NET_NS +@KERNEL_NAMESPACES
 	URL:=https://github.com/DarkCaster/OpenWrt-Custom-Feed
 endef
