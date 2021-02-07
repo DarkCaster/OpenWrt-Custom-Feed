@@ -61,4 +61,4 @@ define Package/tinyproxy-alt/install
 	$(INSTALL_BIN) ./files/tinyproxy.init $(1)/etc/init.d/tinyproxy
 endef
 
-$(eval $(call BuildPackage,tinyproxy))
+$(eval $(call BuildPackage,tinyproxy-alt))
