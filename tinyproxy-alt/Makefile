@@ -35,7 +35,7 @@ define Package/tinyproxy-alt
   SUBMENU:=Web Servers/Proxies
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=Tinyproxy is a lightweight HTTP and HTTPS proxy
+  TITLE:=Alternative tinyproxy build
   DEPENDS:= +@KERNEL_NET_NS +@KERNEL_NAMESPACES
   URL:=https://tinyproxy.github.io/
 endef
