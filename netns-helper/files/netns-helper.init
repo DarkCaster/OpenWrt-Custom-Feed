@@ -10,7 +10,9 @@ start() {
 	local ifname=""
 	local nsname=""
 	local ipv4addr=""
+	local ipv4src=""
 	local ipv6addr=""
+	local ipv6src=""
 	local gateway4=""
 	local gateway6=""
 	#iterate over netns sections
@@ -24,7 +26,9 @@ start() {
 		ifname="$(uci -q get $netns_cfg.@netns[$inum].ifname)"
 		nsname="$(uci -q get $netns_cfg.@netns[$inum].nsname)"
 		ipv4addr="$(uci -q get $netns_cfg.@netns[$inum].ipv4addr)"
+		ipv4src="$(uci -q get $netns_cfg.@netns[$inum].ipv4src)"
 		ipv6addr="$(uci -q get $netns_cfg.@netns[$inum].ipv6addr)"
+		ipv6src="$(uci -q get $netns_cfg.@netns[$inum].ipv6src)"
 		gateway4="$(uci -q get $netns_cfg.@netns[$inum].gateway4)"
 		gateway6="$(uci -q get $netns_cfg.@netns[$inum].gateway6)"
 		#try next netns
@@ -39,8 +43,10 @@ start() {
 		ip netns exec "$nsname" ip link set dev "${ifname}_int" up
 		[ ! -z "$ipv4addr" ] && ip netns exec "$nsname" ip -4 addr add "$ipv4addr" brd + dev "${ifname}_int"
 		[ ! -z "$ipv6addr" ] && ip netns exec "$nsname" ip -6 addr add "$ipv6addr" dev "${ifname}_int"
-		[ ! -z "$gateway4" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int"
-		[ ! -z "$gateway6" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int"
+		[ ! -z "$gateway4" ] && [ ! -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" src "$ipv4src"
+		[ ! -z "$gateway6" ] && [ ! -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" src "$ipv6src"
+		[ ! -z "$gateway4" ] && [ -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int"
+		[ ! -z "$gateway6" ] && [ -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int"
 	done
 }
 
