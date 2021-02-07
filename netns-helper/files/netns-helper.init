@@ -10,9 +10,11 @@ start() {
 	local ifname=""
 	local nsname=""
 	local ipv4addr=""
-	local ipv4src=""
+	local ipv4metric=""
+	local ipv4mtu=""
 	local ipv6addr=""
-	local ipv6src=""
+	local ipv6metric=""
+	local ipv6mtu=""
 	local gateway4=""
 	local gateway6=""
 	#iterate over netns sections
@@ -26,11 +28,11 @@ start() {
 		ifname="$(uci -q get $netns_cfg.@netns[$inum].ifname)"
 		nsname="$(uci -q get $netns_cfg.@netns[$inum].nsname)"
 		ipv4addr="$(uci -q get $netns_cfg.@netns[$inum].ipv4addr)"
-		ipv4src="$(uci -q get $netns_cfg.@netns[$inum].ipv4src)"
 		ipv4metric="$(uci -q get $netns_cfg.@netns[$inum].ipv4metric)"
+		ipv4mtu="$(uci -q get $netns_cfg.@netns[$inum].ipv4mtu)"
 		ipv6addr="$(uci -q get $netns_cfg.@netns[$inum].ipv6addr)"
-		ipv6src="$(uci -q get $netns_cfg.@netns[$inum].ipv6src)"
 		ipv6metric="$(uci -q get $netns_cfg.@netns[$inum].ipv6metric)"
+		ipv6mtu="$(uci -q get $netns_cfg.@netns[$inum].ipv6mtu)"
 		gateway4="$(uci -q get $netns_cfg.@netns[$inum].gateway4)"
 		gateway6="$(uci -q get $netns_cfg.@netns[$inum].gateway6)"
 		#try next netns
@@ -42,15 +44,18 @@ start() {
 		#create veth devices pair and netns
 		ip netns add "$nsname" || continue
 		ip link add "${ifname}_ext" type veth peer "${ifname}_int" netns "$nsname" || continue
+		#disable ipv6 autoconfiguration via RA
+		ip netns exec "$nsname" sysctl -w net.ipv6.conf."${ifname}_int".accept_ra=0
 		#add ip address and set gateway
 		ip netns exec "$nsname" ip link set dev lo up
 		ip netns exec "$nsname" ip link set dev "${ifname}_int" up
 		[ ! -z "$ipv4addr" ] && ip netns exec "$nsname" ip -4 addr add "$ipv4addr" brd + dev "${ifname}_int"
 		[ ! -z "$ipv6addr" ] && ip netns exec "$nsname" ip -6 addr add "$ipv6addr" dev "${ifname}_int"
-		[ ! -z "$gateway4" ] && [ ! -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" src "$ipv4src" metric "$ipv4metric"
-		[ ! -z "$gateway6" ] && [ ! -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" src "$ipv6src" metric "$ipv6metric"
-		[ ! -z "$gateway4" ] && [ -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" metric "$ipv4metric"
-		[ ! -z "$gateway6" ] && [ -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" metric "$ipv6metric"
+		#TODO: wait for ip addresses became available
+		[ ! -z "$gateway4" ] && [ -z "$ipv4mtu" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" metric "$ipv4metric"
+		[ ! -z "$gateway6" ] && [ -z "$ipv6mtu" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" metric "$ipv6metric"
+		[ ! -z "$gateway4" ] && [ ! -z "$ipv4mtu" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" metric "$ipv4metric" mtu "$ipv4mtu"
+		[ ! -z "$gateway6" ] && [ ! -z "$ipv6mtu" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" metric "$ipv6metric" mtu "$ipv6mtu"
 	done
 }
 
