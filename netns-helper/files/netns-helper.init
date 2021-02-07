@@ -27,14 +27,18 @@ start() {
 		nsname="$(uci -q get $netns_cfg.@netns[$inum].nsname)"
 		ipv4addr="$(uci -q get $netns_cfg.@netns[$inum].ipv4addr)"
 		ipv4src="$(uci -q get $netns_cfg.@netns[$inum].ipv4src)"
+		ipv4metric="$(uci -q get $netns_cfg.@netns[$inum].ipv4metric)"
 		ipv6addr="$(uci -q get $netns_cfg.@netns[$inum].ipv6addr)"
 		ipv6src="$(uci -q get $netns_cfg.@netns[$inum].ipv6src)"
+		ipv6metric="$(uci -q get $netns_cfg.@netns[$inum].ipv6metric)"
 		gateway4="$(uci -q get $netns_cfg.@netns[$inum].gateway4)"
 		gateway6="$(uci -q get $netns_cfg.@netns[$inum].gateway6)"
 		#try next netns
 		inum=$(expr $inum + 1)
 		[ -z "$ifname" ] && continue
 		[ -z "$nsname" ] && continue
+		[ -z "$ipv4metric" ] && ipv4metric="100"
+		[ -z "$ipv6metric" ] && ipv6metric="1000"
 		#create veth devices pair and netns
 		ip netns add "$nsname" || continue
 		ip link add "${ifname}_ext" type veth peer "${ifname}_int" netns "$nsname" || continue
@@ -43,10 +47,10 @@ start() {
 		ip netns exec "$nsname" ip link set dev "${ifname}_int" up
 		[ ! -z "$ipv4addr" ] && ip netns exec "$nsname" ip -4 addr add "$ipv4addr" brd + dev "${ifname}_int"
 		[ ! -z "$ipv6addr" ] && ip netns exec "$nsname" ip -6 addr add "$ipv6addr" dev "${ifname}_int"
-		[ ! -z "$gateway4" ] && [ ! -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" src "$ipv4src"
-		[ ! -z "$gateway6" ] && [ ! -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" src "$ipv6src"
-		[ ! -z "$gateway4" ] && [ -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int"
-		[ ! -z "$gateway6" ] && [ -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int"
+		[ ! -z "$gateway4" ] && [ ! -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" src "$ipv4src" metric "$ipv4metric"
+		[ ! -z "$gateway6" ] && [ ! -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" src "$ipv6src" metric "$ipv6metric"
+		[ ! -z "$gateway4" ] && [ -z "$ipv4src" ] && ip netns exec "$nsname" ip -4 route add default via "$gateway4" dev "${ifname}_int" metric "$ipv4metric"
+		[ ! -z "$gateway6" ] && [ -z "$ipv6src" ] && ip netns exec "$nsname" ip -6 route add default via "$gateway6" dev "${ifname}_int" metric "$ipv6metric"
 	done
 }
 
