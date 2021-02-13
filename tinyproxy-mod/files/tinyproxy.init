@@ -149,6 +149,6 @@ start_proxy() {
 }
 
 start_service() {
-	config_load "$CFGFILE"
+	config_load 'tinyproxy-mod'
 	config_foreach start_proxy 'tinyproxy'
 }
