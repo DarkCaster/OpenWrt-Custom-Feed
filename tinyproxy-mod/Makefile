@@ -55,7 +55,7 @@ define Package/tinyproxy-mod/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(CP) $(PKG_INSTALL_DIR)/usr/bin/tinyproxy $(1)/usr/bin/tinyproxy-mod
 	$(INSTALL_DIR) $(1)/usr/share/tinyproxy-mod
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/tinyproxy/*.html $(1)/usr/share/tinyproxy-mod/
+	$(CP) $(PKG_INSTALL_DIR)/usr/share/tinyproxy-mod/*.html $(1)/usr/share/tinyproxy-mod/
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/tinyproxy.config $(1)/etc/config/tinyproxy-mod
 	$(INSTALL_DIR) $(1)/etc/init.d
