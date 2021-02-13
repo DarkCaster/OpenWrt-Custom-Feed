@@ -36,7 +36,7 @@ define Package/tinyproxy-mod
   SUBMENU:=Web Servers/Proxies
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=Alternative tinyproxy build
+  TITLE:=Modified version of tinyproxy
   DEPENDS:=+libudns +@KERNEL_NET_NS +@KERNEL_NAMESPACES
   URL:=https://tinyproxy.github.io/
 endef
