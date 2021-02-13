@@ -38,7 +38,7 @@ define Package/tinyproxy-mod
   CATEGORY:=Network
   TITLE:=Modified version of tinyproxy
   DEPENDS:=+libudns +@KERNEL_NET_NS +@KERNEL_NAMESPACES
-  URL:=https://tinyproxy.github.io/
+  URL:=https://github.com/DarkCaster/Tinyproxy-Mod
 endef
 
 define Package/tinyproxy-mod/description
