@@ -103,6 +103,9 @@ start_proxy() {
 	proxy_string "$1" ErrorFile_408 "ErrorFile 408"
 	proxy_string "$1" ErrorFile_503 "ErrorFile 503"
 
+	proxy_string "$1" ExternalDNS
+	proxy_string "$1" ExternalSearchDomain
+
 	proxy_string "$1" DefaultErrorFile
 	proxy_string "$1" StatHost StatHost 127.0.0.1
 	proxy_string "$1" StatFile
