@@ -8,16 +8,15 @@
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=tinyproxy-alt
-PKG_VERSION:=1.11.0-git
+PKG_NAME:=tinyproxy-mod
+PKG_VERSION:=2021.02-git
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/tinyproxy/tinyproxy.git
-PKG_SOURCE_VERSION=adad565c03f3ffde6520646bc5d119ce1eadbadb
+PKG_SOURCE_URL:=https://github.com/DarkCaster/Tinyproxy-Mod.git
+PKG_SOURCE_VERSION=215b98106135e890cb940dc4f956679fa5560c44
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION)
 
-#PKG_MAINTAINER:=Jo-Philipp Wich <jo@mein.io>
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
 PKG_LICENSE:=GPL-2.0-or-later
 PKG_LICENSE_FILES:=COPYING
@@ -33,34 +32,34 @@ TARGET_CFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-obje
 TARGET_CXXFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
 TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
-define Package/tinyproxy-alt
+define Package/tinyproxy-mod
   SUBMENU:=Web Servers/Proxies
   SECTION:=net
   CATEGORY:=Network
   TITLE:=Alternative tinyproxy build
-  DEPENDS:= +@KERNEL_NET_NS +@KERNEL_NAMESPACES
+  DEPENDS:=+libudns +@KERNEL_NET_NS +@KERNEL_NAMESPACES
   URL:=https://tinyproxy.github.io/
 endef
 
-define Package/tinyproxy-alt/description
-Tinyproxy with support running it within network namespace
+define Package/tinyproxy-mod/description
+Tinyproxy with configurable DNS and network namespaces support
 endef
 
-define Package/tinyproxy-alt/conffiles
-/etc/config/tinyproxy-alt
+define Package/tinyproxy-mod/conffiles
+/etc/config/tinyproxy-mod
 endef
 
 CONFIGURE_VARS += ac_cv_path_A2X=no
 
-define Package/tinyproxy-alt/install
+define Package/tinyproxy-mod/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(CP) $(PKG_INSTALL_DIR)/usr/bin/tinyproxy $(1)/usr/bin
-	$(INSTALL_DIR) $(1)/usr/share/tinyproxy
-	$(CP) $(PKG_INSTALL_DIR)/usr/share/tinyproxy/*.html $(1)/usr/share/tinyproxy/
+	$(CP) $(PKG_INSTALL_DIR)/usr/bin/tinyproxy $(1)/usr/bin/tinyproxy-mod
+	$(INSTALL_DIR) $(1)/usr/share/tinyproxy-mod
+	$(CP) $(PKG_INSTALL_DIR)/usr/share/tinyproxy/*.html $(1)/usr/share/tinyproxy-mod/
 	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_CONF) ./files/tinyproxy.config $(1)/etc/config/tinyproxy
+	$(INSTALL_CONF) ./files/tinyproxy.config $(1)/etc/config/tinyproxy-mod
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/tinyproxy.init $(1)/etc/init.d/tinyproxy
+	$(INSTALL_BIN) ./files/tinyproxy.init $(1)/etc/init.d/tinyproxy-mod
 endef
 
-$(eval $(call BuildPackage,tinyproxy-alt))
+$(eval $(call BuildPackage,tinyproxy-mod))

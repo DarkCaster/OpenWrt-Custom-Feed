@@ -5,7 +5,7 @@
  # to stdout.
  #
 -#LogFile "@localstatedir@/log/tinyproxy/tinyproxy.log"
-+LogFile "@localstatedir@/log/tinyproxy.log"
++LogFile "@localstatedir@/log/tinyproxy-mod.log"
  
  #
  # Syslog: Tell tinyproxy to use syslog instead of a logfile.  This
@@ -14,7 +14,7 @@
  # If not specified, no pidfile will be written.
  #
 -#PidFile "@localstatedir@/run/tinyproxy/tinyproxy.pid"
-+PidFile "@localstatedir@/tinyproxy.pid"
++PidFile "@localstatedir@/tinyproxy-mod.pid"
  
  #
  # XTinyproxy: Tell Tinyproxy to include the X-Tinyproxy header, which
