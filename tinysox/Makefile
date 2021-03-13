@@ -30,7 +30,7 @@ define Package/tinysox
   CATEGORY:=Network
   TITLE:=SOCKS5 server with minimal feature-set
   USERID:=tinysox:tinysox
-  DEPENDS:=+libudns +@KERNEL_NET_NS +@KERNEL_NAMESPACES
+  DEPENDS:=+libstdcpp +libudns +@KERNEL_NET_NS +@KERNEL_NAMESPACES
   URL:=https://github.com/DarkCaster/TinySox
 endef
 
