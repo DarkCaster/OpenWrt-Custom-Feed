@@ -28,7 +28,8 @@ define Package/tinysox
   SUBMENU:=Web Servers/Proxies
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=TinySox SOCKS5 server with minimal feature-set
+  TITLE:=SOCKS5 server with minimal feature-set
+  USERID:=tinysox:tinysox
   DEPENDS:=+libudns +@KERNEL_NET_NS +@KERNEL_NAMESPACES
   URL:=https://github.com/DarkCaster/TinySox
 endef
