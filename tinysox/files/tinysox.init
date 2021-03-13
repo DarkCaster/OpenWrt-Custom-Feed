@@ -9,8 +9,13 @@ tinysox_cfg="tinysox"
 start_service() {
 	local uid="$(id -u tinysox 2>/dev/null)"
 	local gid="$(id -g tinysox 2>/dev/null)"
-	[ -z "$uid" ] && echo "cannot get UID for system user tinysox" && exit 1
-	[ -z "$gid" ] && echo "cannot get GID for system user tinysox" && exit 1
+	if [ -z "$uid" ] || [ -z "$gid" ]; then
+		uid="$(id -u nobody 2>/dev/null)"
+		gid="$(id -g nogroup 2>/dev/null)"
+	fi
+	if [ -z "$uid" ] || [ -z "$gid" ]; then
+		echo "Failed to setup unprivileged UID or GID to run tinysox" && exit 1
+	fi
 	local listen=""
 	local port=""
 	local dns=""
