@@ -34,7 +34,8 @@ define Package/dnsdist-alt
 	  +libfstrm \
 	  +protobuf \
 	  +lua \
-	  +re2
+	  +re2 \
+	  +tinycdb
   URL:=https://dnsdist.org/
 endef
 
