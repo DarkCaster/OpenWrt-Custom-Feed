@@ -30,7 +30,7 @@ menu "Configuration"
 	config TINYSOX_REQUIRE_NETNS
 		bool "Network namespaces support"
 		help
-			"Enforce kernel options required for network namespaces support"
+			Enforce kernel options required for network namespaces support
 		default y
 endmenu
 endef
