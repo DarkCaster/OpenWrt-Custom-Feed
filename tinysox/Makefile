@@ -24,13 +24,28 @@ TARGET_CFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-obje
 TARGET_CXXFLAGS+=-O2 -fomit-frame-pointer -flto -fuse-linker-plugin -ffat-lto-objects
 TARGET_LDFLAGS+=-flto -fuse-linker-plugin -ffat-lto-objects
 
+define Package/tinysox/config
+menu "Configuration"
+	depends on PACKAGE_tinysox
+	config TINYSOX_REQUIRE_NETNS
+		bool "Network namespaces support"
+		help
+			"Enforce kernel options required for network namespaces support"
+		default y
+endmenu
+endef
+
 define Package/tinysox
   SUBMENU:=Web Servers/Proxies
   SECTION:=net
   CATEGORY:=Network
   TITLE:=SOCKS5 server with minimal feature-set
   USERID:=tinysox:tinysox
-  DEPENDS:=+libstdcpp +libudns +@KERNEL_NET_NS +@KERNEL_NAMESPACES
+  DEPENDS:= \
+    +TINYSOX_REQUIRE_NETNS:@KERNEL_NET_NS \
+    +TINYSOX_REQUIRE_NETNS:@KERNEL_NAMESPACES \
+    +libstdcpp \
+    +libudns
   URL:=https://github.com/DarkCaster/TinySox
 endef
 
