@@ -42,8 +42,8 @@ define Package/tinysox
   TITLE:=SOCKS5 server with minimal feature-set
   USERID:=tinysox:tinysox
   DEPENDS:= \
-    +TINYSOX_REQUIRE_NETNS:@KERNEL_NET_NS \
-    +TINYSOX_REQUIRE_NETNS:@KERNEL_NAMESPACES \
+    +@TINYSOX_REQUIRE_NETNS:KERNEL_NET_NS \
+    +@TINYSOX_REQUIRE_NETNS:KERNEL_NAMESPACES \
     +libstdcpp \
     +libudns
   URL:=https://github.com/DarkCaster/TinySox
