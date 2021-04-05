@@ -28,7 +28,7 @@ PKG_HASH:=d4c14cc096577edca3f6a2a59c2f51869e35350b3988018ddf808c88e5973b79
 PKG_FIXUP:=autoreconf
 PKG_FIXUP:=patch-libtool
 PKG_INSTALL:=1
-PKG_BUILD_DIR:=$(BUILD_DIR)/stunnel-alt-$(PKG_VERSION)
+PKG_BUILD_DIR:=$(BUILD_DIR)/stunnel-alt-$(PKG_VERSION)/stunnel-$(PKG_VERSION)
 
 include $(INCLUDE_DIR)/package.mk
 
