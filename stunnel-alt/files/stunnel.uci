@@ -1,4 +1,5 @@
 config globals 'globals'
+	option enabled '0'
 	#option alt_config_file '/etc/stunnel/stunnel.conf'
 	option setuid 'nobody'
 	option setgid 'nogroup'

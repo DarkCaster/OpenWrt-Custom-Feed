@@ -9,7 +9,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=stunnel-alt
-PKG_VERSION:=5.58
+PKG_VERSION:=5.59
 PKG_RELEASE:=1
 
 PKG_LICENSE:=GPL-2.0-or-later
@@ -45,10 +45,8 @@ define Package/stunnel-alt/description
 endef
 
 define Package/stunnel-alt/conffiles
-/etc/stunnel-alt/stunnel.conf
 /etc/config/stunnel
 endef
-
 
 CONFIGURE_ARGS+= \
 	--with-random=/dev/urandom \
@@ -62,19 +60,11 @@ CONFIGURE_ARGS+= \
 	--disable-ipv6
 endif
 
-define Build/Compile
-	mkdir -p $(PKG_INSTALL_DIR)/etc/stunnel
-	echo '#dummy' > $(PKG_INSTALL_DIR)/etc/stunnel/stunnel.pem
-	$(call Build/Compile/Default)
-endef
-
 define Package/stunnel-alt/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stunnel $(1)/usr/bin/stunnel-alt
 	$(INSTALL_DIR) $(1)/usr/lib/stunnel
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/stunnel/libstunnel.so $(1)/usr/lib/stunnel/
-	$(INSTALL_DIR) $(1)/etc/stunnel-alt
-	$(INSTALL_CONF) ./files/stunnel.conf $(1)/etc/stunnel-alt/stunnel.conf
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/stunnel.init $(1)/etc/init.d/stunnel-alt
 	$(INSTALL_DIR) $(1)/etc/config
