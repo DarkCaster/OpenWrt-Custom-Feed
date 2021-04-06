@@ -52,7 +52,7 @@ CONFIGURE_ARGS+= \
 	--with-random=/dev/urandom \
 	--with-threads=pthread \
 	--with-ssl=$(STAGING_DIR)/usr \
-	--enable-static \
+	--disable-static \
 	--disable-shared \
 	--disable-libwrap \
 	--disable-systemd
@@ -65,8 +65,6 @@ endif
 define Package/stunnel-alt/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stunnel $(1)/usr/bin/stunnel-alt
-	$(INSTALL_DIR) $(1)/usr/lib/stunnel
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/lib/stunnel/libstunnel.so $(1)/usr/lib/stunnel/
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/stunnel.init $(1)/etc/init.d/stunnel-alt
 	$(INSTALL_DIR) $(1)/etc/config
