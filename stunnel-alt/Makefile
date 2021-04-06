@@ -52,7 +52,6 @@ CONFIGURE_ARGS+= \
 	--with-random=/dev/urandom \
 	--with-threads=pthread \
 	--with-ssl=$(STAGING_DIR)/usr \
-	--disable-static \
 	--disable-shared \
 	--disable-libwrap \
 	--disable-systemd
