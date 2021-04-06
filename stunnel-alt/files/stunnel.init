@@ -1,21 +1,20 @@
 #!/bin/sh /etc/rc.common
 # Copyright (C) 2006-2008 OpenWrt.org
 # Copyright (C) 2019 Jeffery To
+# Copyright (C) 2021 Alexander Gromov <dark.caster@outlook.com>
 
 START=90
 USE_PROCD=1
 
-PID_FILE="/var/run/stunnel/stunnel.pid"
-CONF_FILE="/var/etc/stunnel.conf"
+CONF_NAME="stunnel-alt"
+PID_FILE="/var/run/$CONF_NAME/stunnel.pid"
+CONF_FILE="/var/etc/$CONF_NAME.conf"
 BIN="/usr/bin/stunnel-alt"
 CONF_FILE_CREATED=
-HAVE_ALT_CONF_FILE=
 SERVICE_SECTION_FOUND=
 
 validate_globals_section() {
-	uci_load_validate stunnel globals "$1" "$2" \
-		'alt_config_file:file' \
-		\
+	uci_load_validate "$CONF_NAME" globals "$1" "$2" \
 		'compression:or("deflate","zlib")' \
 		'EGD:string' \
 		'engine:string' \
@@ -33,7 +32,7 @@ validate_globals_section() {
 }
 
 validate_service_section() {
-	uci_load_validate stunnel service "$1" "$2" \
+	uci_load_validate "$CONF_NAME" service "$1" "$2" \
 		'enabled:bool:1' \
 		\
 		'setgid:or(string,uinteger)' \
@@ -42,7 +41,7 @@ validate_service_section() {
 }
 
 validate_service_options() {
-	uci_load_validate stunnel "$1" "$2" "$3" \
+	uci_load_validate "$CONF_NAME" "$1" "$2" "$3" \
 		'accept_host:host' \
 		'accept_port:port' \
 		'CAfile:string' \
@@ -333,18 +332,9 @@ global_defs() {
 		return 1
 	}
 
-	# If the first globals section has alt_config_file, don't process any more globals
-	[ -z "$HAVE_ALT_CONF_FILE" ] || return 0
-
-	# If "alt_config_file" specified in the first globals section, use that instead
-	[ -z "$alt_config_file" ] || [ -n "$CONF_FILE_CREATED" ] || {
-		# Symlink "alt_config_file" since it's a bit easier and safer
-		ln -s "$alt_config_file" "$CONF_FILE"
-		# Set section found to start service, user hopefully knows what they are doing
-		SERVICE_SECTION_FOUND=1
-		CONF_FILE_CREATED=1
-		HAVE_ALT_CONF_FILE=1
-		return 0
+	[ "$enabled" = 1 ] || {
+		echo "service disabled"
+		return 1
 	}
 
 	pid_dir="$(dirname "$PID_FILE")"
@@ -373,7 +363,7 @@ service_section() {
 }
 
 service_triggers() {
-	procd_add_reload_trigger stunnel
+	procd_add_reload_trigger "$CONF_NAME"
 
 	procd_open_validate
 	validate_globals_section "$@"
@@ -385,17 +375,15 @@ service_triggers() {
 
 start_service() {
 	rm -f "$CONF_FILE"
-	config_load stunnel
+	config_load "$CONF_NAME"
 
 	config_foreach validate_globals_section globals global_defs
 
-	[ -n "$HAVE_ALT_CONF_FILE" ] || {
-		create_conf_file
-		config_foreach validate_service_section service service_section
-	}
+	create_conf_file
+	config_foreach validate_service_section service service_section
 
 	[ -n "$SERVICE_SECTION_FOUND" ] || {
-		logger -t stunnel -p daemon.info "No uci service section enabled or found!"
+		echo "No uci service section enabled or found!"
 		return 1
 	}
 

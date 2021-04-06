@@ -45,7 +45,7 @@ define Package/stunnel-alt/description
 endef
 
 define Package/stunnel-alt/conffiles
-/etc/config/stunnel
+/etc/config/stunnel-alt
 endef
 
 CONFIGURE_ARGS+= \
