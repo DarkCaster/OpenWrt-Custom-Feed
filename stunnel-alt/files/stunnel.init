@@ -6,15 +6,16 @@
 START=90
 USE_PROCD=1
 
-CONF_NAME="stunnel-alt"
-PID_FILE="/var/run/$CONF_NAME/stunnel.pid"
-CONF_FILE="/var/etc/$CONF_NAME.conf"
-BIN="/usr/bin/stunnel-alt"
+UNIT_NAME="stunnel-alt"
+PID_FILE="/var/run/$UNIT_NAME/$UNIT_NAME.pid"
+CONF_FILE="/var/etc/$UNIT_NAME.conf"
+BIN="/usr/bin/$UNIT_NAME"
 CONF_FILE_CREATED=
 SERVICE_SECTION_FOUND=
 
 validate_globals_section() {
-	uci_load_validate "$CONF_NAME" globals "$1" "$2" \
+	uci_load_validate "$UNIT_NAME" globals "$1" "$2" \
+		'enabled:bool:0' \
 		'compression:or("deflate","zlib")' \
 		'EGD:string' \
 		'engine:string' \
@@ -32,16 +33,15 @@ validate_globals_section() {
 }
 
 validate_service_section() {
-	uci_load_validate "$CONF_NAME" service "$1" "$2" \
+	uci_load_validate "$UNIT_NAME" service "$1" "$2" \
 		'enabled:bool:1' \
-		\
 		'setgid:or(string,uinteger)' \
 		'setuid:or(string,uinteger)' \
 		;
 }
 
 validate_service_options() {
-	uci_load_validate "$CONF_NAME" "$1" "$2" "$3" \
+	uci_load_validate "$UNIT_NAME" "$1" "$2" "$3" \
 		'accept_host:host' \
 		'accept_port:port' \
 		'CAfile:string' \
@@ -324,11 +324,6 @@ global_defs() {
 		return 1
 	}
 
-	[ "$enabled" = 1 ] || {
-		echo "service disabled"
-		return 1
-	}
-
 	pid_dir="$(dirname "$PID_FILE")"
 	mkdir -p "$pid_dir"
 	[ -z "$setuid" ] || chown "$setuid" "$pid_dir"
@@ -355,22 +350,27 @@ service_section() {
 }
 
 start_service() {
-	rm -f "$CONF_FILE"
-	config_load "$CONF_NAME"
+	if [ "$(uci -q get $UNIT_NAME.@globals[0].enabled)" != "1" ]; then
+		echo "$UNIT_NAME disabled, put option enabled '1' to the globals config-file section in order to enable the service"
+		echo "$UNIT_NAME disabled" | logger -t "$UNIT_NAME" -p warn
+	else
+		rm -f "$CONF_FILE"
+		config_load "$UNIT_NAME"
 
-	config_foreach validate_globals_section globals global_defs
+		config_foreach validate_globals_section globals global_defs
 
-	create_conf_file
-	config_foreach validate_service_section service service_section
+		create_conf_file
+		config_foreach validate_service_section service service_section
 
-	[ -n "$SERVICE_SECTION_FOUND" ] || {
-		echo "No uci service section enabled or found!"
-		return 1
-	}
+		[ -n "$SERVICE_SECTION_FOUND" ] || {
+			echo "No uci service section enabled or found!"
+			return 1
+		}
 
-	procd_open_instance "$CONF_NAME"
-	procd_set_param command "$BIN"
-	procd_append_param command "$CONF_FILE"
-	procd_set_param respawn ${respawn_threshold:-60} ${respawn_timeout:-5} ${respawn_retry:-5}
-	procd_close_instance
+		procd_open_instance "$UNIT_NAME"
+		procd_set_param command "$BIN"
+		procd_append_param command "$CONF_FILE"
+		procd_set_param respawn ${respawn_threshold:-60} ${respawn_timeout:-5} ${respawn_retry:-5}
+		procd_close_instance
+	fi
 }

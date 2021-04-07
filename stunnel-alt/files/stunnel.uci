@@ -9,4 +9,3 @@ config service 'dummy'
 	option accept_host 'localhost'
 	option accept_port '6000'
 	list connect 'localhost:6001'
-
