@@ -112,14 +112,6 @@ validate_service_options() {
 		;
 }
 
-validate_globals_section_service_options() {
-	validate_service_options globals "$@"
-}
-
-validate_service_section_service_options() {
-	validate_service_options service "$@"
-}
-
 print_options() {
 	local _opt
 	local _value
@@ -362,17 +354,6 @@ service_section() {
 	validate_service_options service "$1" print_service_options
 }
 
-service_triggers() {
-	procd_add_reload_trigger "$CONF_NAME"
-
-	procd_open_validate
-	validate_globals_section "$@"
-	validate_globals_section_service_options "$@"
-	validate_service_section "$@"
-	validate_service_section_service_options "$@"
-	procd_close_validate
-}
-
 start_service() {
 	rm -f "$CONF_FILE"
 	config_load "$CONF_NAME"
@@ -387,10 +368,9 @@ start_service() {
 		return 1
 	}
 
-	procd_open_instance
+	procd_open_instance "$CONF_NAME"
 	procd_set_param command "$BIN"
 	procd_append_param command "$CONF_FILE"
-	procd_set_param respawn
-	procd_set_param file "$CONF_FILE"
+	procd_set_param respawn ${respawn_threshold:-60} ${respawn_timeout:-5} ${respawn_retry:-5}
 	procd_close_instance
 }
