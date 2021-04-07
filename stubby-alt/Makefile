@@ -10,7 +10,7 @@ PKG_BUILD_DEPENDS:=getdns-alt
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/getdnsapi/stubby.git
-PKG_SOURCE_VERSION=4f27f6502101852d34457a82d739e87646a351f6
+PKG_SOURCE_VERSION=5c37fa25b3985c703edb471ec03f3003b9f48c12
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
 PKG_LICENSE:=BSD-3-Clause
@@ -46,7 +46,7 @@ define Package/stubby-alt/description
 endef
 
 define Package/stubby-alt/conffiles
-/etc/stubby.d/stubby.yml.example
+/etc/config/stubby-alt
 endef
 
 define Package/stubby-alt/install
@@ -54,8 +54,10 @@ define Package/stubby-alt/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/stubby $(1)/usr/sbin/stubby-alt
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/stubby.init $(1)/etc/init.d/stubby-alt
-	$(INSTALL_DIR) $(1)/etc/stubby.d
-	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/etc/stubby.d/stubby.yml.example
+	$(INSTALL_DIR) $(1)/usr/share/stubby-alt
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/etc/stubby/stubby.yml $(1)/usr/share/stubby-alt/stubby.yml
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/stubby.config $(1)/etc/config/stubby-alt
 endef
 
 CMAKE_OPTIONS += -DENABLE_GETDNS_STATIC_LINK=ON

@@ -4,19 +4,33 @@ USE_PROCD=1
 START=99
 
 stubby="/usr/sbin/stubby-alt"
-stubby_config_dir="/etc/stubby.d"
+stubby_cfg="stubby-alt"
 
 start_service() {
-  for stubby_config in "$stubby_config_dir"/*.yml
-  do
-    [ ! -f "$stubby_config" ] && continue
-    stubby_profile=$(basename "$stubby_config")
-    procd_open_instance "stubby:$stubby_profile"
-    procd_set_param command "$stubby" -C "$stubby_config"
+  local inum="0"
+  local yml=""
+  while [ ! -z "$(uci -q get $stubby_cfg.@instance[$inum])" ]; do
+    #skip disabled sections
+    if [ "$(uci -q get $stubby_cfg.@instance[$inum].enabled)" != "1" ]; then
+      echo "$stubby_cfg instance #$inum disabled" | logger -t "$stubby_cfg" -p warn
+      inum=$(expr $inum + 1)
+      continue
+    fi
+    #skip sections with missing yml config
+    yml="$(uci -q get $stubby_cfg.@instance[$inum].yml)"
+    if [ ! -f "$yml" ]; then
+      echo "yml config file for instance #$inum not found: $yml" | logger -t "$stubby_cfg" -p err
+      inum=$(expr $inum + 1)
+      continue
+    fi
+    procd_open_instance "stubby:$inum"
+    procd_set_param command "$stubby" -C "$yml"
     procd_set_param respawn ${respawn_threshold:-60} ${respawn_timeout:-1} ${respawn_retry:-5}
     procd_set_param stdout 1
     procd_set_param stderr 1
     procd_set_param user stubby
     procd_close_instance
+    #try next instance
+    inum=$(expr $inum + 1)
   done
 }
