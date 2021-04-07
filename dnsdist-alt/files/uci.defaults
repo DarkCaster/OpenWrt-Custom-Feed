@@ -1,8 +1,0 @@
-#!/bin/sh
-
-/etc/init.d/dnsdist stop
-/etc/init.d/dnsdist disable
-
-rm -f /tmp/luci-indexcache
-
-exit 0

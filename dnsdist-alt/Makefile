@@ -40,14 +40,13 @@ define Package/dnsdist-alt
 endef
 
 define Package/dnsdist-alt/description
-  alternative build of dnsdist: some features removed, added instant-flush feature to remote-logger (as extra boolean param for newRemoteLogger lua-function), added custom configuration script
+  alternative build of dnsdist: some features removed, added instant-flush feature to remote-logger (as extra boolean param for newRemoteLogger lua-function), added custom startup script with some helper-methods
 endef
 
 define Package/dnsdist-alt/conffiles
-/etc/dnsdist.cfg.lua
-/etc/dnsdist.defs.lua
-/etc/dnsdist.post.lua
-/etc/init.d/dnsdist
+/etc/config/dnsdist-alt
+/etc/dnsdist-alt/config.lua
+/etc/dnsdist-alt/post.lua
 endef
 
 CONFIGURE_ARGS+= \
@@ -78,16 +77,17 @@ TARGET_CFLAGS+=-Os
 TARGET_CXXFLAGS+=-Os
 
 define Package/dnsdist-alt/install
-	$(INSTALL_DIR) $(1)/etc
-	$(INSTALL_CONF) ./files/dnsdist.cfg.lua $(1)/etc/dnsdist.cfg.lua
-	$(INSTALL_CONF) ./files/dnsdist.defs.lua $(1)/etc/dnsdist.defs.lua
-	$(INSTALL_CONF) ./files/dnsdist.post.lua $(1)/etc/dnsdist.post.lua
+	$(INSTALL_DIR) $(1)/usr/share/dnsdist-alt
+	$(INSTALL_DATA) ./files/dnsdist-alt.lua $(1)/usr/share/dnsdist-alt/dnsdist-alt.lua
+	$(INSTALL_DIR) $(1)/etc/config
+	$(INSTALL_CONF) ./files/dnsdist-alt.config $(1)/etc/config/dnsdist-alt
+	$(INSTALL_DIR) $(1)/etc/dnsdist-alt
+	$(INSTALL_CONF) ./files/config.lua $(1)/etc/dnsdist-alt/config.lua
+	$(INSTALL_CONF) ./files/post.lua $(1)/etc/dnsdist-alt/post.lua
 	$(INSTALL_DIR) $(1)/etc/init.d
-	$(INSTALL_BIN) ./files/dnsdist.init $(1)/etc/init.d/dnsdist
+	$(INSTALL_BIN) ./files/dnsdist-alt.init $(1)/etc/init.d/dnsdist-alt
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/dnsdist $(1)/usr/bin/
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/uci.defaults $(1)/etc/uci-defaults/99-dnsdist
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/dnsdist $(1)/usr/bin/dnsdist-alt
 endef
 
 $(eval $(call BuildPackage,dnsdist-alt))

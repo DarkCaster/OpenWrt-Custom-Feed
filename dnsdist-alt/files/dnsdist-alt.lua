@@ -15,17 +15,12 @@ consider not to use this script in production env, you have been warned
 
 ]]--
 
--- table names with matches
-rulesDefTableName="definitions"
-
 -- load "definitions" table from dnsdist.defs.lua config file, and configure other stuff before generating rules
-dofile("/etc/dnsdist.defs.lua")
+dofile("/etc/dnsdist-alt/config.lua")
 
-assert(rulesDefTableName~=nil and rulesDefTableName~="rulesTable", "rulesDefTableName is invalid")
+rulesTable=loadstring("return definitions")()
 
-rulesTable=loadstring("return " .. rulesDefTableName)()
-
-assert(type(rulesTable)=="table","global table with name '" .. rulesDefTableName .. "' is not found")
+assert(type(rulesTable)=="table","global table with name 'definitions' is not found")
 
 function tryAddQueryDelay(ruleIdx,ruleDef,regexRule)
 	assert(type(ruleDef.dl)=="nil" or type(ruleDef.dl)=="number", "rule definition at position #"..ruleIdx.." delay definition is not a number")
@@ -124,8 +119,8 @@ for ruleIdx,ruleDef in ipairs(rulesTable) do
 	end
 end
 
--- run dnsdist.post.lua config file before adding last rule for any dns-query not handled with rules generated before
-dofile("/etc/dnsdist.post.lua")
+-- run post-rules.lua config file before adding last rule for any dns-query not handled with rules generated before
+dofile("/etc/dnsdist-alt/post.lua")
 
 -- add action that will generate negative response for all other non-matched queries
 --addAction(AllRule(),SetNegativeAndSOAAction(true,"dnsdist",1800,"dnsdist","dnsdist",0,86400,7200,3600000,1800))
