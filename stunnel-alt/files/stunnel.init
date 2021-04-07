@@ -351,7 +351,6 @@ service_section() {
 
 start_service() {
 	if [ "$(uci -q get $UNIT_NAME.@globals[0].enabled)" != "1" ]; then
-		echo "$UNIT_NAME disabled, put option enabled '1' to the globals config-file section in order to enable the service"
 		echo "$UNIT_NAME disabled" | logger -t "$UNIT_NAME" -p warn
 	else
 		rm -f "$CONF_FILE"
