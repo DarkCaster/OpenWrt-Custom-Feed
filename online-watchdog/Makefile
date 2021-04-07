@@ -40,8 +40,6 @@ define Package/online-watchdog/install
 	$(INSTALL_BIN) ./files/online-watchdog.init $(1)/etc/init.d/online-watchdog
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(INSTALL_BIN) ./files/online-watchdog.sh $(1)/usr/sbin/online-watchdog.sh
-	$(INSTALL_DIR) $(1)/etc/uci-defaults
-	$(INSTALL_BIN) ./files/online-watchdog.uci.defaults $(1)/etc/uci-defaults/99-online-watchdog
 endef
 
 $(eval $(call BuildPackage,online-watchdog))
