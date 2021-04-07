@@ -10,7 +10,7 @@ PKG_BUILD_DEPENDS:=openssl
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
 PKG_SOURCE_URL:=https://github.com/getdnsapi/getdns.git
-PKG_SOURCE_VERSION=ebeff971929867fdbc2f4d17dafd43893788a657
+PKG_SOURCE_VERSION=291e0018817269b72c7cbd6c3e531acba95f563f
 
 PKG_MAINTAINER:=Alexander Gromov <dark.caster@outlook.com>
 PKG_LICENSE:=BSD-3-Clause
