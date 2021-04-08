@@ -7,7 +7,7 @@ PROG=/usr/sbin/online-watchdog.sh
 
 start_service() {
   if [ "$(uci -q get online-watchdog.@online-watchdog[0].enabled)" != "1" ]; then
-    echo "online-watchdog disabled" | logger -t "online-watchdog" -p warn
+    echo "service disabled" | logger -t "online-watchdog" -p warn
   else
     procd_open_instance
     procd_set_param command $PROG

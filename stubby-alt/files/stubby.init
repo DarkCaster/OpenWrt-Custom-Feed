@@ -12,7 +12,7 @@ start_service() {
   while [ ! -z "$(uci -q get $stubby_cfg.@instance[$inum])" ]; do
     #skip disabled sections
     if [ "$(uci -q get $stubby_cfg.@instance[$inum].enabled)" != "1" ]; then
-      echo "$stubby_cfg instance #$inum disabled" | logger -t "$stubby_cfg" -p warn
+      echo "instance #$inum disabled" | logger -t "$stubby_cfg" -p warn
       inum=$(expr $inum + 1)
       continue
     fi

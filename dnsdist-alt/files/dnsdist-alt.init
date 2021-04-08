@@ -5,7 +5,7 @@ USE_PROCD=1
 
 start_service() {
 	if [ "$(uci -q get dnsdist-alt.@dnsdist-alt[0].enabled)" != "1" ]; then
-		echo "dnsdist-alt disabled" | logger -t "dnsdist-alt" -p warn
+		echo "service disabled" | logger -t "dnsdist-alt" -p warn
 	else
 		local startup_script="$(uci -q get dnsdist-alt.@dnsdist-alt[0].startup_script)"
 		[ -z "$startup_script" ] && startup_script="/usr/share/dnsdist-alt/dnsdist-alt.lua"
